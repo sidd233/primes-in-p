@@ -6,12 +6,8 @@ This repository documents my journey toward understanding primality testing and 
 
 | Phase                 | Topic                          |
 | --------------------- | ------------------------------ |
-| Foundations           | Input size vs value            |
-| Foundations           | What is primality testing      |
-| Foundations           | Complexity classes P           |
-| Foundations           | Complexity classes BPP         |
+| Foundations           | Complexipty classes BPP         |
 | Foundations           | Deterministic vs probabilistic |
-| Foundations           | Modular arithmetic basics      |
 | Foundations           | Euclid algorithm               |
 | Foundations           | Fermat’s theorem               |
 | Foundations           | Euler’s theorem                |

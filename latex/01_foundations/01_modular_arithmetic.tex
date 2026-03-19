@@ -1,0 +1,122 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{Modular Arithmetic Basics}
+\author{sid}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+
+\section{What Does ``mod'' Even Mean?}
+
+\subsection*{Definition}
+
+\begin{align*}
+    a \equiv b \pmod{n}
+    \quad \iff \quad
+    n \mid (a - b)
+\end{align*}
+
+\textbf{Interpretation:} $a$ and $b$ leave the same remainder when divided by $n$.
+
+\begin{example}
+\[
+27 \equiv 12 \pmod{5}
+\quad \implies \quad
+5 \mid (27 - 12)
+\]
+\end{example}
+
+\subsection*{Basic Properties}
+
+If $a \equiv b \pmod{n}$ and $c \equiv d \pmod{n}$, then:
+
+\begin{align*}
+    a + c &\equiv b + d \pmod{n} \\
+    a - c &\equiv b - d \pmod{n} \\
+    ac    &\equiv bd \pmod{n}
+\end{align*}
+
+\textbf{Interpretation:}  
+You can do arithmetic normally, then take modulo.
+
+\subsection*{Reduction Rule}
+
+\begin{align*}
+    a \equiv a \bmod n
+\end{align*}
+
+This means every number can be reduced to its remainder modulo $n$.
+
+\begin{example}
+\[
+38 \equiv 3 \pmod{5}
+\]
+\end{example}
+
+\subsection*{Working Modulo $n$}
+
+All computations happen inside:
+\[
+\mathbb{Z}_n = \{0, 1, 2, \dots, n-1\}
+\]
+
+\begin{example}
+\[
+7 + 9 \equiv 16 \equiv 1 \pmod{5}
+\]
+\end{example}
+
+\subsection*{Divisibility in Modular Form}
+
+\begin{align*}
+    a \equiv 0 \pmod{n}
+    \quad \iff \quad
+    n \mid a
+\end{align*}
+
+\begin{example}
+\[
+20 \equiv 0 \pmod{5}
+\]
+\end{example}
+
+\subsection*{Cancellation Rule (Important)}
+
+If:
+\[
+ac \equiv bc \pmod{n}
+\]
+
+Then you can cancel $c$ only if:
+\[
+\gcd(c, n) = 1
+\]
+
+\subsection*{Key Insight}
+
+Modular arithmetic allows us to replace large numbers with smaller representatives while preserving arithmetic structure.
+
+
+\end{document}

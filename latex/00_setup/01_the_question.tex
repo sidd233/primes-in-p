@@ -1,0 +1,55 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{PRIMES in P : The Question}
+\author{sid}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\newcommand{\Z}{\mathbb{Z}}
+
+\begin{document}
+
+\maketitle
+
+\section{The Problem of PRIMES}
+
+Let $n \in \mathbb{Z}$ with $n > 1$. Determine whether $n$ is \textbf{prime}.
+
+\section{Input Model}
+
+For an integer $n$.
+\[
+\text{Length of n in binary} = k = \lfloor \log_2 n \rfloor + 1
+\]
+
+$\implies$ the complexity of algorithms will be measured as a function of $k$, not $n$.
+
+\section{Trial Division is a Lie}
+
+The naivest approach would be to just divide $n$ by every integer from $1$ to $n$.
+This should take $O(\sqrt{n})$ time.
+
+However,
+$$
+O(\sqrt{n})=O(n^{1/2})=O({2^{(k-1)}}^{1/2})=O(2^{\sqrt{k}})
+$$
+
+This is \textbf{EXP} time.
+
+Thus, the key question becomes:
+
+\begin{center}
+\textit{Is there a deterministic algorithm that decides primality in time polynomial in $k$?}
+\end{center}
+i.e.,
+\begin{center}
+\textit{Is PRIMES in P?}
+\end{center}
+
+
+\end{document}

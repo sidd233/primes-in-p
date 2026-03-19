@@ -1,0 +1,100 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{Euclid's Algorithm}
+\author{sid}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+
+\section{Goal}
+    Given two integers $a$ and $b$, compute
+    $$ gcd(a,b) $$
+
+\section{Core Idea}
+    $$ gcd(a,b)=gcd(b,a\bmod{b}) $$
+
+\section{Za Algorithm}
+    Given integers $a > b$:
+
+    \begin{enumerate}
+        \item Compute $r = a \bmod b$
+        \item Replace $a \leftarrow b$, $b \leftarrow r$
+        \item Repeat until $b = 0$
+        \item Answer is $a$
+    \end{enumerate}
+
+    \begin{example}
+        \[
+        \begin{aligned}
+        \gcd(48, 18)
+        &= \gcd(18, 48 \bmod 18) \\
+        &= \gcd(18, 12) \\
+        &= \gcd(12, 6) \\
+        &= \gcd(6, 0) \\
+        &= 6
+        \end{aligned}
+        \]
+    \end{example}
+
+\subsection*{Why Does This Work?}
+
+\begin{proof}
+Let $r = a \bmod b$. By the division algorithm,
+\[
+a = qb + r
+\]
+for some integer $q$.
+
+We show that the set of common divisors of $(a,b)$ is equal to that of $(b,r)$.
+
+\medskip
+\noindent\textbf{Forward direction.}
+Suppose $d \mid a$ and $d \mid b$. Then:
+\[
+d \mid (a - qb).
+\]
+Since $a - qb = r$, we get:
+\[
+d \mid r.
+\]
+Thus, $d$ divides both $b$ and $r$.
+
+\medskip
+\noindent\textbf{Reverse direction.}
+Suppose $d \mid b$ and $d \mid r$. Then:
+\[
+d \mid (qb + r).
+\]
+Since $qb + r = a$, we get:
+\[
+d \mid a.
+\]
+Thus, $d$ divides both $a$ and $b$.
+
+\medskip
+Hence, the set of common divisors of $(a,b)$ and $(b,r)$ are identical, and therefore:
+\[
+\gcd(a,b) = \gcd(b,r).
+\]
+\end{proof}
+\end{document}
