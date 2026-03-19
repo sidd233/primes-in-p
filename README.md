@@ -6,11 +6,6 @@ This repository documents my journey toward understanding primality testing and 
 
 | Phase                 | Topic                          |
 | --------------------- | ------------------------------ |
-| Setup                 | Collect primary papers         |
-| Setup                 | Collect survey papers          |
-| Setup                 | Bookmark references            |
-| Setup                 | Setup note workflow            |
-| Setup                 | Setup slide workflow           |
 | Foundations           | Input size vs value            |
 | Foundations           | What is primality testing      |
 | Foundations           | Complexity classes P           |
