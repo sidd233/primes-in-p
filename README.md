@@ -6,7 +6,6 @@ This repository documents my journey toward understanding primality testing and 
 
 | Phase                 | Topic                          |
 | --------------------- | ------------------------------ |
-| Setup                 | Create slide template          |
 | Setup                 | Collect primary papers         |
 | Setup                 | Collect survey papers          |
 | Setup                 | Bookmark references            |

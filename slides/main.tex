@@ -1,0 +1,116 @@
+\documentclass{beamer}
+
+\usetheme{metropolis}
+\usepackage{plex-sans}
+
+\title{PRIMES in P}
+\author{Siddharth \& Amit}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Motivation}
+
+\begin{frame}{What is the problem?}
+Given a number $n$, determine whether it is prime.
+
+\pause
+
+Naive idea:
+\begin{itemize}
+    \item Try all divisors up to $\sqrt{n}$
+\end{itemize}
+
+\pause
+
+Question:
+\begin{itemize}
+    \item Is this efficient?
+\end{itemize}
+\end{frame}
+
+\section{Input Size vs Value}
+
+\begin{frame}{Input Size vs Value}
+Computers do not see $n$ directly.
+
+\pause
+
+They see its binary representation:
+\[
+\text{input size} = \log n
+\]
+
+\pause
+
+Trial division takes:
+\[
+O(\sqrt{n})
+\]
+
+\pause
+
+Rewrite in terms of input size:
+\[
+\sqrt{n} = 2^{\frac{1}{2} \log n}
+\]
+
+\pause
+
+This is exponential in input size.
+\end{frame}
+
+\begin{frame}{Why this matters}
+Polynomial time means:
+\[
+O((\log n)^k)
+\]
+
+\pause
+
+But trial division is:
+\[
+O(2^{(\log n)/2})
+\]
+
+\pause
+
+Conclusion:
+\begin{itemize}
+    \item Trial division is not in P
+\end{itemize}
+\end{frame}
+
+\section{Next Step}
+
+\begin{frame}{Where do we go from here?}
+We need faster methods.
+
+\pause
+
+Idea:
+\begin{itemize}
+    \item Use number theory instead of brute force
+\end{itemize}
+
+\pause
+
+Leads to:
+\begin{itemize}
+    \item Fermat test
+    \item Miller-Rabin
+    \item AKS
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Takeaway}
+\begin{itemize}
+    \item Efficiency depends on input size, not value
+    \item $\sqrt{n}$ is exponential in $\log n$
+    \item We need polynomial-time algorithms in $\log n$
+\end{itemize}
+\end{frame}
+
+\end{document}

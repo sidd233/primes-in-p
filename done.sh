@@ -25,8 +25,8 @@ if [ -f "$LATEX_PATH" ]; then
 fi
 
 # Ensure PDF exists
-if [ ! -f pdf/main.pdf ]; then
-  echo "Error: pdf/main.pdf not found. Compile first."
+if [ ! -f build/main.pdf ]; then
+  echo "Error: build/main.pdf not found. Compile first."
   exit 1
 fi
 
@@ -39,7 +39,7 @@ mkdir -p "$(dirname "$PDF_PATH")"
 
 # Move files
 mv main.tex "$LATEX_PATH"
-mv pdf/main.pdf "$PDF_PATH"
+mv build/main.pdf "$PDF_PATH"
 
 # Clean build directory
 rm -rf build/*
