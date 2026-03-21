@@ -1,0 +1,102 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{PRIMES in P : The Question}
+\author{sid}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+
+\section{The Problem of PRIMES}
+
+Let $n \in \mathbb{Z}$ with $n > 1$. Determine whether $n$ is \textbf{prime}.
+
+\section{Input Model}
+
+For an integer $n$.
+\[
+\text{Length of n in binary} = k = \lfloor \log_2 n \rfloor + 1
+\]
+
+$\implies$ the complexity of algorithms will be measured as a function of $k$, not $n$.
+
+\section{Trial Division is a Lie}
+
+The naivest approach would be to just divide $n$ by every integer from $1$ to $n$.
+This should take $O(\sqrt{n})$ time.
+
+However,
+$$
+O(\sqrt{n})=O(n^{1/2})=O({2^{(k-1)}}^{1/2})=O(2^{\sqrt{k}})
+$$
+
+This is \textbf{EXP} time.
+
+Thus, the key question becomes:
+
+\begin{center}
+\textit{Is there a deterministic algorithm that decides primality in time polynomial in $k$?}
+\end{center}
+i.e.,
+\begin{center}
+\textit{Is PRIMES in P?}
+\\
+\end{center}
+
+\hrulefill
+
+\subsection*{PS: Wheel Factorization via Primorials}
+A simple improvement:
+\begin{itemize}
+  \item test divisibility by 2
+  \item the odd numbers between 3 and $\sqrt{n}$
+\end{itemize}
+
+$$
+c\#\ \text{(c\ primorial)} = product\ of\ all\ primes \le c
+$$
+
+Generalizing further, all primes greater than c\# are of the form $c\#\cdot{k} + i$ for positive integers $i$ and $k$, $0\le{i}<{c\#}$ AND $i$ is coprime to $c$.
+
+\vspace{0.8em}
+
+Consider $6\#=2\cdot3\cdot5=30$
+$\implies{\forall{x\ge30}}, x = 30k+i$
+
+Now,
+2 divides 0,2,4,6,\dots,28,
+3 divides 0,3,9,12,\dots,27,
+and 5 divides 0,5,10,15,\dots,25.
+
+Thus, all primes $\ge$ 30 are of the form 30k+i for $i \in{\{1,7,11,13,17,19,23,29\}}$ (but not the other way around, think of 437 = 19 $\cdot$ 23 = 7\#$\cdot$2+17).
+
+$\therefore$ Search space reduced by 76.67\%!!
+
+\vspace{0.8em}
+
+As $c$ grows, the fraction of coprime remainders to remainders decreases, and so the time to test $n$ decreases (though it still necessary to check for divisibility by all primes that are less than $c$).
+
+Observations analogous to the preceding can be applied recursively, giving the Sieve of Eratosthenes.
+
+\hrulefill
+
+\end{document}

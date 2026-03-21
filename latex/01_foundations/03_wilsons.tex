@@ -1,0 +1,73 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{Wilson's Theorem}
+\author{sid}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Claim.} A natural number $n$ is prime iff
+$$
+(n-1)! \equiv -1\bmod n
+$$
+
+\paragraph{Proof.}
+Suppose that $n$ is composite. Then there exists a prime $q$ such that
+\[
+2 \leq q < n \quad \text{and} \quad q \mid n.
+\]
+Hence, there exists an integer $k$ such that
+\[
+n = qk.
+\]
+
+Assume for contradiction that
+\[
+(n-1)! \equiv -1 \pmod{n}.
+\]
+Then there exists an integer $m$ such that
+\[
+(n-1)! = nm - 1 = (qk)m - 1 = q(km) - 1.
+\]
+Thus, $(n-1)!$ is one less than a multiple of $q$, which implies
+\[
+(n-1)! \equiv -1 \pmod{q}.
+\]
+
+On the other hand, since $2 \leq q \leq n-1$, the integer $q$ appears among the factors in
+\[
+(n-1)! = (n-1)(n-2)\cdots 2 \cdot 1.
+\]
+Therefore,
+\[
+(n-1)! \equiv 0 \pmod{q}.
+\]
+
+This is a contradiction. Hence,
+$
+(n-1)! \not\equiv -1 \pmod{n}
+$
+when $n$ is composite.
+\hfill $\square$
+
+\end{document}

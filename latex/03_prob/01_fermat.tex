@@ -1,0 +1,188 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{Fermat Primality Test}
+\author{sid}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+The simplest probabilistic primality test is the Fermat primality test (actually a compositeness test). It works as follows:
+
+\vspace{1em}
+If $a^{n-1} \not\equiv 1 \pmod{n}$, then $n$ is composite.
+where, $a$ is any co-prime of $n$
+
+If $a^{n-1}$(modulo $n$) is 1 but $n$ is not a prime, then $n$ is called a \itl{pseudoprime to base $a$}
+\begin{example}
+  Let $n = 341$ and $a = 2$. Then
+  \[
+  2^{340} \equiv 1 \pmod{341},
+  \]
+  even though $341 = 11 \cdot 31$ is composite.
+  In fact, 341 is the smallest pseudoprime to the base of 2.
+\end{example}
+
+\begin{theorem}[Fermat's Little Theorem]
+Let $p$ be a prime and let $a \in \mathbb{Z}$ with $p \nmid a$. Then
+\[
+a^{p-1} \equiv 1 \pmod{p}.
+\]
+\end{theorem}
+
+\begin{proof}
+Consider the set of nonzero residues modulo $p$:
+\[
+S = \{1,2,3,\dots,p-1\}
+\]
+Now consider the set obtained by multiplying each element of $S$ by $a$:
+\[
+aS = \{a,2a,3a,\dots,(p-1)a\}
+\]
+
+\bld{Claim:} $aS$ is just a rearrangement of $S$
+
+\itl{Step 1: all elements of aS are unique}
+For contracdiction, let us assume there exist two distinct $i$ and $j$ in $S$ such that
+\[
+\begin{aligned}
+ai &\equiv aj \pmod{p} \\
+\implies ai - aj &\equiv 0 \pmod{p} \\
+\implies a(i - j) &\equiv 0 \pmod{p}.
+\end{aligned}
+\]
+
+Since $p \nmid a$, we have $\gcd(a,p)=1$, so $a$ is invertible modulo $p$. Hence,
+\[
+i - j \equiv 0 \pmod{p}.
+\]
+
+Since $1 \le i,j \le p-1$, this implies $-p<i-j<p$. Then this is only possible when $i=j$, i.e., $i$ and $j$ are not distinct.
+
+\itl{Step 2: all elements of aS are non-zero}
+This is very simple to prove as neither $a$ or $i\in S$ are divisible by $p$ so $ai$ cannot be divisible by $p$
+
+\bld{Claim proved.} as we have $p-1$ unique elements all less than $p$ and none of them are 0
+
+Multiplying each element in $aS$,
+
+\[
+\begin{aligned}
+  a\cdot2a\cdot3a\dots\cdot{(p-1)a} &\equiv 1\cdot2\cdot3\dots\cdot{(p-1)} \pmod p \\
+  a^{p-1}\cdot(p-1)! &\equiv  (p-1)! \pmod p \\
+  a^{p-1}&\equiv  1\pmod p
+\end{aligned}
+\]
+\end{proof}
+
+\section*{Time Complexity}
+The dominant operation is computing $a^{n-1} \bmod n$. This is done using
+\emph{fast modular exponentiation} (repeated squaring).
+
+The exponent $n-1$ has $O(\log n)$ bits, so modular exponentiation requires
+$O(\log n)$ modular multiplications.
+
+Each multiplication involves numbers of size at most $n$, i.e., with $O(\log n)$ bits.
+Using schoolbook multiplication, this costs
+\[
+O((\log n)^2).
+\]
+
+Thus, one iteration of the Fermat test runs in
+\[
+O((\log n)^3).
+\]
+
+To improve reliability, the test is repeated with different choices of $a$.
+If we perform $k$ independent trials, the total running time is
+\[
+O(k (\log n)^3).
+\]
+
+Using faster multiplication algorithms (e.g., Karatsuba or FFT-based methods),the complexity can be improved to
+\[
+O\big(k \log^2 n \log \log n\big).
+\]
+
+The Fermat primality test runs in polynomial time in the input size $\log n$, making it computationally efficient.
+
+\section*{Flaws}
+
+Although the Fermat primality test is computationally efficient, it suffers from
+fundamental limitations that make it unreliable in practice.
+
+\subsection*{Pseudoprimes}
+
+There are only 21853 pseudoprimes base 2 that are less than $2.5\times10^{10}$. This means that for $n$ upto $2.5\times10^{10}$, Fermat's test fails only $8.7\times{10^{-7}}\%$ of times, 
+
+
+\subsection*{Carmichael Numbers}
+
+A more serious issue arises from a special class of composite numbers.
+
+\bld{Definition} A composite integer $n$ is called a \emph{Carmichael number} if
+
+\[
+a^{n-1} \equiv 1 \pmod{n}
+\quad \text{for all integers } a \text{ with } \gcd(a,n)=1.
+\]
+In other words, Carmichael numbers satisfy Fermat's congruence for \emph{every} valid base $a$, not just some.
+\begin{theorem}[Korselt's Criterion]
+A composite integer $n$ is a Carmichael number if and only if:
+\begin{itemize}
+    \item $n$ is square-free (No perfect square greater than 1 divides $n$), and
+    \item for every prime divisor $p \mid n$, we have
+    \[
+    p - 1 \mid n - 1.
+    \]
+\end{itemize}
+\end{theorem}
+
+This provides a constructive way to identify Carmichael numbers.
+
+\begin{example}
+  Consider
+  \[
+  n = 561 = 3 \cdot 11 \cdot 17.
+  \]
+
+  We verify Korselt's criterion:
+  \[
+  \begin{aligned}
+  3 - 1 &= 2 \mid 560, \\
+  11 - 1 &= 10 \mid 560, \\
+  17 - 1 &= 16 \mid 560.
+  \end{aligned}
+  \]
+
+  Since $561$ is square-free and satisfies the divisibility conditions, it is a
+  Carmichael number. Consequently,
+  \[
+  a^{560} \equiv 1 \pmod{561}
+  \]
+  for all $a$ with $\gcd(a,561)=1$.
+\end{example}
+
+\section*{Conclusion}
+
+The Fermat primality test is fast and simple, but unreliable due to the existence of pseudoprimes and Carmichael numbers. While useful as a preliminary filter, it cannot serve as a definitive test for primality.
+
+\end{document}

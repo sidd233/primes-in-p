@@ -1,0 +1,60 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{Selfridge Conjecture}
+\author{sid}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+
+John Selfridge has conjectured that if $p$ is an odd number, and  $p\equiv\pm2\bmod{5}$, then $p$ will be prime if both of the following hold:
+\begin{enumerate}
+  \item $2^{p-1}\equiv1\bmod{p}$
+  \item $f_{p+1}\equiv0\bmod{p}$
+\end{enumerate}
+where $f_k$ is the $k$-th Fibonacci number.
+
+The first condition is Fermat primality test using base 2.
+
+\hrulefill
+
+In general, if $p\equiv{a\bmod{(x^2+4)}}$ where $y^2\not\equiv{a\bmod{(x^2+4)}}\ \forall{y\in\N}$ ($a$ is a quadratic non-residue), then $p$ is a prime iff
+\begin{enumerate}
+  \item $2^{p-1}\equiv{1\bmod{p}}$
+  \item $F_{p+1}(x)\equiv{0\bmod{p}}$
+\end{enumerate}
+$F_{k}(x)$ is the $k$-th Fibonacci polynomial at $x$.
+
+$$
+F_n(x) =
+\begin{cases}
+0, & \text{if } n = 0, \\
+1, & \text{if } n = 1, \\
+x F_{n-1}(x) + F_{n-2}(x), & \text{if } n \geq 2.
+\end{cases}
+$$
+
+Selfridge, Pomerance and Wagstaff together offered \$620 for a counterexample or proof that there is none, with the prize now due from the Number Theory Foundation.
+
+This eventually lead to Baillie-PSW primality test.
+
+\end{document}

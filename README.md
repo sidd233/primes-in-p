@@ -6,22 +6,11 @@ This repository documents my journey toward understanding primality testing and 
 
 | Phase                 | Topic                          |
 | --------------------- | ------------------------------ |
-| Foundations           | Complexipty classes BPP         |
+| Foundations           | Complexipty classes BPP        |
 | Foundations           | Deterministic vs probabilistic |
-| Foundations           | Euclid algorithm               |
-| Foundations           | Fermat’s theorem               |
-| Foundations           | Euler’s theorem                |
 | Foundations           | Chinese remainder theorem      |
 | Foundations           | Intro to polynomial rings      |
 | Foundations           | Meaning of (Z/nZ)[x]           |
-| Naive baseline        | Trial division idea            |
-| Naive baseline        | Trial division code            |
-| Naive baseline        | Trial division example         |
-| Naive baseline        | Complexity derivation          |
-| Naive baseline        | Exponential vs polynomial gap  |
-| Fermat                | Fermat theorem intuition       |
-| Fermat                | Fermat test algorithm          |
-| Fermat                | Fast exponentiation            |
 | Fermat                | Example run                    |
 | Fermat                | Carmichael numbers intro       |
 | Fermat                | Carmichael example             |

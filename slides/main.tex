@@ -3,7 +3,7 @@
 \usetheme{metropolis}
 \usepackage{plex-sans}
 
-\title{PRIMES in P}
+\title{Prime Time}
 \author{Siddharth \& Amit}
 \date{\today}
 
@@ -11,24 +11,26 @@
 
 \maketitle
 
-\section{Motivation}
+\section{The Question in Question}
 
-\begin{frame}{What is the problem?}
-Given a number $n$, determine whether it is prime.
+\begin{frame}{What is the Issue?}
+    \begin{block}{Problem}
+        Given a number $n$, determine whether it is prime.
+    \end{block}
 
-\pause
+    \pause
 
-Naive idea:
-\begin{itemize}
-    \item Try all divisors up to $\sqrt{n}$
-\end{itemize}
+    Naive idea:
+    \begin{itemize}
+        \item Try all divisors up to $\sqrt{n}$
+    \end{itemize}
 
-\pause
+    \pause
 
-Question:
-\begin{itemize}
-    \item Is this efficient?
-\end{itemize}
+    Question:
+    \begin{itemize}
+        \item Is this efficient?
+    \end{itemize}
 \end{frame}
 
 \section{Input Size vs Value}
@@ -85,32 +87,39 @@ Conclusion:
 
 \section{Next Step}
 
-\begin{frame}{Where do we go from here?}
-We need faster methods.
+\begin{frame}{History of Primality Testing}
 
-\pause
-
-Idea:
 \begin{itemize}
-    \item Use number theory instead of brute force
+    \item \textbf{Ancient:} Trial Division \\
+    \small Exact but slow: $O(\sqrt{n})$
+    
+    \vspace{0.5em}
+    
+    \item \textbf{17th c.: Fermat} \\
+    \small Introduced $a^{n-1} \equiv 1 \pmod{n}$ (first algebraic test)
+    
+    \vspace{0.5em}
+    
+    \item \textbf{1970s: Miller--Rabin} \\
+    \small Fast probabilistic test with bounded error
+    
+    \vspace{0.5em}
+    
+    \item \textbf{1980s: Baillie--PSW} \\
+    \small Hybrid test (MR + Lucas), no known counterexamples
+    
+    \vspace{0.5em}
+    
+    \item \textbf{2002: AKS} \\
+    \small First deterministic polynomial-time test ($\text{PRIMES} \in \mathbf{P}$)
 \end{itemize}
 
-\pause
+\vspace{1em}
 
-Leads to:
-\begin{itemize}
-    \item Fermat test
-    \item Miller-Rabin
-    \item AKS
-\end{itemize}
-\end{frame}
+\centering
+\small
+\textit{Evolution: Exact $\rightarrow$ Probabilistic $\rightarrow$ Provably Efficient}
 
-\begin{frame}{Takeaway}
-\begin{itemize}
-    \item Efficiency depends on input size, not value
-    \item $\sqrt{n}$ is exponential in $\log n$
-    \item We need polynomial-time algorithms in $\log n$
-\end{itemize}
 \end{frame}
 
 \end{document}

@@ -1,0 +1,42 @@
+\documentclass{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\title{Intro to Probabilistic Primality Tests}
+\author{sid}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{example}{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+
+Probabilistic tests are more rigorous than heuristics in that they provide provable bounds on the probability of being fooled by a composite number.
+
+\vspace*{0.8em}
+
+The basic structure of randomized primality tests is as follows:
+
+\begin{enumerate}
+  \item Randomly pick a number $a$.
+  \item Check equality (corresponding to the chosen test) involving $a$ and the given number $n$. If the equality fails to hold true, then $n$ is a composite number and $a$ is a \itl{witness} for the compositeness, and the test stops.
+  \item Get back to the step one until the required accuracy is reached.
+\end{enumerate}
+
+After one or more iterations, if $n$ is not found to be a composite number, then it can be declared \bld{probably prime}.
+\end{document}
