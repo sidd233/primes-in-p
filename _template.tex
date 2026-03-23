@@ -7,9 +7,25 @@
 \author{sid}
 \date{\today}
 
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
+% ------------------------------------------------------------------
+% Theorem environments
+% ------------------------------------------------------------------
 \newtheorem{example}{Example}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% ------------------------------------------------------------------
+% Custom operators
+% ------------------------------------------------------------------
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\lcm}{\operatorname{lcm}}
 
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\bld}[1]{\textbf{#1}}

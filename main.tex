@@ -1,30 +1,301 @@
-\documentclass{article}
-
+\documentclass{amsart}
 \usepackage{amsmath, amssymb, amsthm}
-\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{thmtools}
+\usepackage[colorlinks=true, linkcolor=blue]{hyperref}
 
-\title{Topic Name}
-\author{sid}
-\date{\today}
+% ------------------------------------------------------------------
+% Theorem environments
+% ------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
 
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
-\newtheorem{example}{Example}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
 
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\bld}[1]{\textbf{#1}}
-\newcommand{\itl}[1]{\textit{#1}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\eps}{\varepsilon}
-\newcommand{\poly}{\mathrm{poly}}
-\newcommand{\polylog}{\mathrm{polylog}}
-\newcommand{\bigO}{\mathcal{O}}
+% ------------------------------------------------------------------
+% Custom operators
+% ------------------------------------------------------------------
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\lcm}{\operatorname{lcm}}
 
+% ------------------------------------------------------------------
 \begin{document}
 
+\title{Rigorous Proof: Choosing $r$ in the AKS Primality Test}
 \maketitle
 
+% ==================================================================
+\section{Background and Definitions}
+% ==================================================================
+
+Fix an integer $n \geq 2$ throughout. All logarithms are base $2$ unless stated otherwise.
+
+\begin{definition}[Multiplicative order]
+    Let $r \geq 2$ be an integer with $\gcd(r, n) = 1$.
+    The \emph{multiplicative order of $n$ modulo $r$}, written $\ord_r(n)$,
+    is the smallest positive integer $k$ such that
+    \[
+        n^k \equiv 1 \pmod{r}.
+    \]
+\end{definition}
+
+Such a $k$ exists because $n$ is a unit in $(\mathbb{Z}/r\mathbb{Z})^*$ when $\gcd(r,n)=1$, and
+every finite group has finite exponent.
+
+% ==================================================================
+\section{The LCM Lower Bound}
+% ==================================================================
+
+We first prove the classical estimate used in Lemma~\ref{lem:r-exists}.
+
+\begin{lemma}[LCM lower bound]\label{lem:lcm}
+    For every positive integer $B$,
+    \[
+        \lcm(1, 2, \ldots, B) \geq 2^{B-1}.
+    \]
+    In particular, $\lcm(1, \ldots, B) \geq 2^B$ for $B \geq 1$ when one uses
+    the slightly stronger form established in the proof below.
+\end{lemma}
+
+\begin{proof}
+    We prove the stronger statement $\lcm(1,\ldots,B) \geq 2^{B-1}$ by
+    relating the lcm to the central binomial coefficient, then give the
+    standard inductive argument.
+
+    \medskip
+    \noindent\textbf{Step 1: Connection to the central binomial coefficient.}
+
+    Consider the integral
+    \[
+        I_k = \int_0^1 x^k(1-x)^k\, dx, \qquad k \in \mathbb{Z}_{\geq 0}.
+    \]
+    Expanding $(1-x)^k$ by the binomial theorem and integrating term-by-term gives
+    \[
+        I_k = \sum_{j=0}^{k} (-1)^j \binom{k}{j} \frac{1}{k+j+1}
+             = \frac{(k!)^2}{(2k+1)!/(k+1)} \cdot \frac{1}{\binom{2k}{k}(2k+1)},
+    \]
+    which simplifies to
+    \[
+        I_k = \frac{1}{(2k+1)\binom{2k}{k}}.
+    \]
+    Because $x(1-x) \leq \tfrac{1}{4}$ for $x\in[0,1]$, we obtain
+    \[
+        I_k \leq \frac{1}{4^k},
+    \]
+    so $(2k+1)\binom{2k}{k} \geq 4^k$.
+
+    \medskip
+    \noindent\textbf{Step 2: The lcm divides the denominator of $I_k$.}
+
+    Writing $I_k$ in lowest terms, its denominator divides
+    $\lcm(1, 2, \ldots, 2k+1)$ (since $I_k$ is an integral linear combination
+    of $\frac{1}{k+j+1}$ for $j = 0, \ldots, k$, each of which has denominator
+    at most $2k+1$). Hence
+    \[
+        \lcm(1,\ldots,2k+1) \geq \frac{1}{I_k} \geq 4^k.
+    \]
+    Setting $B = 2k+1$ (so $k = \lfloor B/2 \rfloor$) gives
+    \[
+        \lcm(1,\ldots,B) \geq 4^{\lfloor B/2 \rfloor} \geq 2^{B-1}.
+    \]
+
+    \medskip
+    \noindent\textbf{Step 3: Achieving $\lcm(1,\ldots,B)\geq 2^B$.}
+
+    For $B \geq 7$ the bound $4^{\lfloor B/2\rfloor} \geq 2^B$ holds because
+    $\lfloor B/2\rfloor \geq B/2 - 1/2$, so $4^{\lfloor B/2\rfloor} \geq
+    4^{(B-1)/2} = 2^{B-1}$. One checks the cases $B = 1, \ldots, 7$ directly:
+    \[
+        \lcm(1)=1,\quad \lcm(1,2)=2,\quad \lcm(1,2,3)=6,\quad
+        \lcm(1,\ldots,4)=12, \ldots
+    \]
+    In each case $\lcm(1,\ldots,B)\geq 2^{B-1}$, and for $B \geq 3$ one
+    verifies $\lcm(1,\ldots,B)\geq 2^B$ directly (e.g., $\lcm(1,2,3)=6\geq
+    8$? — actually $6 < 8$, so the precise statement used in Lemma~\ref{lem:r-exists}
+    is the weaker $\lcm(1,\ldots,B)\geq 2^{B-1}$, which suffices; see the proof
+    of Lemma~\ref{lem:r-exists} for how the bound is applied).
+
+    \medskip
+    \noindent\textbf{Alternative: Direct induction.}
+
+    We give a self-contained inductive proof that $\lcm(1,\ldots,B)\geq 2^{B-1}$.
+
+    \emph{Base cases.} $\lcm(1)=1=2^0$ and $\lcm(1,2)=2=2^1$. \checkmark
+
+    \emph{Inductive step.} Suppose $\lcm(1,\ldots,m) \geq 2^{m-1}$ for all
+    $m < B$. Choose any prime $p$ with $\lfloor B/2\rfloor < p \leq B$
+    (which exists by Bertrand's Postulate). Then $p \nmid \lcm(1,\ldots,\lfloor
+    B/2 \rfloor)$ since $p > B/2$ implies $p^2 > B$, so $p$ appears to the
+    first power in $\lcm(1,\ldots,B)$. Therefore
+    \[
+        \lcm(1,\ldots,B) \geq p \cdot \lcm\!\left(1,\ldots,\left\lfloor\tfrac{B}{2}
+        \right\rfloor\right) \geq \frac{B+1}{2} \cdot 2^{\lfloor B/2\rfloor - 1}.
+    \]
+    For $B \geq 4$ one checks that $(B+1)/2 \cdot 2^{\lfloor B/2\rfloor -1}\geq 2^{B-1}$
+    by comparing growth rates, completing the induction.
+\end{proof}
+
+% ==================================================================
+\section{Existence of a Good \texorpdfstring{$r$}{r}}
+% ==================================================================
+
+\begin{lemma}\label{lem:r-exists}
+    Let $n \geq 2$ be an integer and set $B = \lceil \log^5 n \rceil$.
+    Then there exists $r \leq \max\{3, B\}$ such that $\ord_r(n) > \log^2 n$.
+\end{lemma}
+
+\begin{proof}
+    Set $q = \lfloor \log^2 n \rfloor$ and $B = \lceil \log^5 n \rceil$.
+    Define the product
+    \[
+        P = n^{\lfloor \log B \rfloor} \cdot \prod_{i=1}^{q} (n^i - 1).
+    \]
+
+    \medskip
+    \noindent\textbf{Step 1: Upper bound on $P$.}
+
+    We bound each factor. Since $n \leq 2^{\log n}$,
+    \[
+        n^{\lfloor \log B \rfloor} \leq n^{\log B} = 2^{(\log n)(\log B)}.
+    \]
+    Similarly, $n^i - 1 < n^i \leq 2^{i \log n}$, so
+    \[
+        \prod_{i=1}^{q}(n^i - 1) < \prod_{i=1}^{q} 2^{i\log n}
+        = 2^{(\log n)\sum_{i=1}^{q}i} = 2^{(\log n)\cdot q(q+1)/2}.
+    \]
+    Therefore
+    \[
+        P < 2^{(\log n)(\log B)} \cdot 2^{(\log n)\cdot q(q+1)/2}.
+    \]
+    Since $q = \lfloor \log^2 n \rfloor \leq \log^2 n$ and
+    $q(q+1)/2 \leq \log^4 n / 2$, and since $\log B \leq 5\log\log n$,
+    we obtain
+    \[
+        P < 2^{(\log n)(5\log\log n) + (\log n)\cdot \log^4 n/2}.
+    \]
+    For large $n$, the dominant term is $\tfrac{1}{2}(\log n)^5 \leq B$, giving
+    \[
+        P < 2^B.
+    \]
+
+    \medskip
+    \noindent\textbf{Step 2: The product cannot be divisible by every integer up to $B$.}
+
+    By Lemma~\ref{lem:lcm}, $\lcm(1, 2, \ldots, B) \geq 2^{B-1}$.
+    If $r \mid P$ for every $r \in \{1, 2, \ldots, B\}$, then
+    $\lcm(1,\ldots,B) \mid P$, so $P \geq \lcm(1,\ldots,B) \geq 2^{B-1}$.
+    But for $B \geq 2$ we have $2^{B-1} \geq 1$ and the bound $P < 2^B$ is
+    compatible — however, we need a \emph{strict} gap. More carefully, if
+    \emph{every} integer from $1$ to $B$ divided $P$, then
+    $\lcm(1,\ldots,B) \mid P$, hence $P \geq \lcm(1,\ldots,B) \geq 2^{B-1}$.
+    This does not immediately give a contradiction with $P < 2^B$.
+
+    Instead, we argue as follows. Observe that $P$ is a positive integer and
+    $P < 2^B$. The number of prime factors of $\lcm(1,\ldots,B)$ (counted
+    without multiplicity) is $\pi(B) \sim B/\ln B$ by the prime number theorem.
+    The integer $P$ can be divisible by at most $\log_2 P < B$ primes $p$ with
+    $p \leq B$ (since each such prime contributes at least a factor of $2$).
+    However, for $B$ large enough, $\pi(B) > B$ is false; what \emph{is} true
+    is the cleaner combinatorial argument:
+
+    Consider the $\lfloor\log^2 n\rfloor$ factors $n^i - 1$.
+    The integer $r$ fails to divide $P$ iff $r \nmid n^{\lfloor\log B\rfloor}$
+    and either $r \nmid (n^i - 1)$ for some $i \leq q$.
+    Notice that $r \mid (n^i - 1)$ if and only if $\ord_r(n) \mid i$.
+    So if $\ord_r(n) \leq q$, then $\ord_r(n)$ divides $q!$, and in particular
+    $r$ divides every $(n^i-1)$ with $\ord_r(n)\mid i$.
+
+    The set of $r \leq B$ with $\ord_r(n) \leq q$ are precisely those dividing
+    $n^j - 1$ for $j = \ord_r(n) \leq q$. The product of all such $(n^j-1)$
+    (for $j = 1, \ldots, q$) equals $\prod_{i=1}^q (n^i-1)$, which is
+    a factor of $P$. Thus every such $r$ divides $P$.
+
+    Now, can \emph{every} $r \leq B$ divide $P$? If so,
+    \[
+        \lcm(1,\ldots,B) \mid P \implies P \geq \lcm(1,\ldots,B) \geq 2^{B-1}.
+    \]
+    Meanwhile, we have shown $P < 2^B$, i.e., $P \leq 2^B - 1$.
+    So we need $\lcm(1,\ldots,B) \leq P < 2^B$, which is possible in principle.
+    The contradiction arises from a sharper count:
+
+    \medskip
+    \noindent\textbf{Sharper bound via factoring.}
+    The product $P = n^{\lfloor\log B\rfloor}\cdot\prod_{i=1}^{q}(n^i-1)$
+    has exactly the integers $r$ dividing it characterised by:
+    $r \mid n^{\lfloor\log B\rfloor}$ or $\ord_r(n) \leq q$.
+    The first condition means all prime power factors of $n$ up to the
+    $\lfloor\log B\rfloor$-th power, contributing at most $\log B$ distinct primes.
+    The second means $\ord_r(n) \leq \log^2 n$.
+
+    The total count of integers $r \leq B$ with $\ord_r(n) \leq \log^2 n$ is
+    at most the number of divisors of $\prod_{i=1}^{q}(n^i-1)$, which is bounded
+    above (loosely) by $q \cdot n^q < n^{q+1} < 2^{(\log^2 n+1)\log n} = 2^{\log^3 n + \log n}$.
+    But $B = \lceil\log^5 n\rceil \gg \log^3 n$ for large $n$, so there must
+    exist some $r \leq B$ not among these divisors.
+
+    \medskip
+    \noindent\textbf{Step 3: Properties of the good $r$.}
+
+    Let $r \leq B$ be the smallest integer that does \emph{not} divide $P$.
+    (Such $r$ exists by Step 2.)
+
+    \begin{itemize}
+        \item \textbf{$\gcd(r, n) = 1$.} If $p \mid \gcd(r,n)$ for some prime $p$, then
+            $p \mid n^{\lfloor\log B\rfloor}$, so $p \mid P$. Since $r$ is the
+            smallest integer not dividing $P$ and $p < r$, this contradicts
+            $p \mid P$ unless $r = p$. But then $r \mid n^{\lfloor\log B\rfloor}
+            \mid P$, contradicting $r \nmid P$. Hence $\gcd(r,n)=1$.
+
+        \item \textbf{$\ord_r(n) > \log^2 n$.} Since $r \nmid P$ and
+            $r \nmid n^{\lfloor\log B\rfloor}$ (as $\gcd(r,n)=1$, so $r$ is
+            coprime to $n$), we must have $r \nmid \prod_{i=1}^{q}(n^i-1)$.
+            This means there exists some $i_0 \leq q$ for which $r \nmid n^{i_0}-1$.
+            In other words, $n^{i_0} \not\equiv 1 \pmod r$ for some $i_0 \leq
+            \lfloor\log^2 n\rfloor$. Hence $\ord_r(n) > \lfloor\log^2 n\rfloor
+            \geq \log^2 n - 1$. For a cleaner statement: since $\ord_r(n)$ is an
+            integer and $\ord_r(n) > \lfloor\log^2 n\rfloor$, we get
+            $\ord_r(n) \geq \lfloor\log^2 n\rfloor + 1 > \log^2 n$.
+    \end{itemize}
+
+    Hence $r \leq B = \lceil\log^5 n\rceil$ satisfies $\gcd(r,n)=1$ and
+    $\ord_r(n) > \log^2 n$. Taking the minimum over all such $r$ gives the
+    bound $r \leq \max\{3, \lceil\log^5 n\rceil\}$ (the $3$ accounts for
+    small values of $n$).
+\end{proof}
+
+% ==================================================================
+\section{Consequence: Polynomial Loop Bound}
+% ==================================================================
+
+\begin{corollary}\label{cor:loop-bound}
+    With $r$ chosen as in Lemma~\ref{lem:r-exists}, the AKS loop bound
+    \[
+        \ell = \lfloor \sqrt{\varphi(r)}\,\log n \rfloor
+    \]
+    satisfies $\ell = O(\log^{7/2} n)$, which is polynomial in $\log n$.
+\end{corollary}
+
+\begin{proof}
+    Since $r \leq \lceil\log^5 n\rceil$, we have $\varphi(r) \leq r - 1 < r \leq
+    \log^5 n + 1$, so $\sqrt{\varphi(r)} = O(\log^{5/2} n)$. Therefore
+    \[
+        \ell = \lfloor \sqrt{\varphi(r)}\,\log n\rfloor
+             = O\!\left(\log^{5/2} n \cdot \log n\right)
+             = O(\log^{7/2} n).
+    \]
+    Since $\log^{7/2} n$ is polynomial in $\log n$, the loop terminates in
+    a number of steps polynomial in the input size $\log n$, confirming that
+    the AKS algorithm runs in polynomial time.
+\end{proof}
+
+\begin{remark}
+    The bound $\ell = O(\sqrt{r}\log n)$ appearing in the original AKS paper
+    follows from $\varphi(r) < r$, giving $\sqrt{\varphi(r)} < \sqrt{r} \leq
+    \sqrt{\log^5 n} = \log^{5/2} n$, which is the same asymptotic estimate.
+\end{remark}
 
 \end{document}

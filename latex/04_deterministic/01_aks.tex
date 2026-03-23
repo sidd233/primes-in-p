@@ -1,0 +1,506 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{pifont}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+
+\definecolor{keyblue}{RGB}{25,75,150}
+\definecolor{boxbg}{RGB}{238,244,255}
+\definecolor{exbg}{RGB}{242,252,238}
+\definecolor{intbg}{RGB}{255,250,230}
+\definecolor{defbg}{RGB}{248,240,255}
+
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{thmbox}[1][]{colback=boxbg, colframe=keyblue!60,
+  fonttitle=\bfseries, title={#1}, boxrule=0.5pt, arc=3pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  before skip=10pt, after skip=10pt}
+\newtcolorbox{defbox}[1][]{colback=defbg, colframe=keyblue!60,
+  fonttitle=\bfseries, title={#1}, boxrule=0.5pt, arc=3pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  before skip=10pt, after skip=10pt}
+\newtcolorbox{exbox}[1][]{colback=exbg, colframe=gray!50,
+  fonttitle=\bfseries, title={#1}, boxrule=0.5pt, arc=3pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  before skip=10pt, after skip=10pt}
+\newtcolorbox{intubox}[1][]{colback=intbg, colframe=orange!60,
+  fonttitle=\bfseries, title={#1}, boxrule=0.5pt, arc=3pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  before skip=10pt, after skip=10pt}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\ord}{\mathrm{ord}}
+\newcommand{\OO}{\widetilde{O}}
+\newcommand{\xmark}{\ding{55}}
+
+\hypersetup{colorlinks=true, linkcolor=keyblue, urlcolor=keyblue}
+
+\title{\textbf{PRIMES is in P: A Complete Guided Exposition}\\
+  \large Based on Agrawal, Kayal, Saxena (2002)}
+\author{Study Notes}
+\date{}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{What the paper proves and why it matters}
+
+\subsection{The problem}
+
+Given an integer $n > 1$, is $n$ prime?
+
+The ancient Greeks knew a method: try dividing $n$ by every integer up to $\sqrt{n}$. If any divides evenly, $n$ is composite; otherwise $n$ is prime. The trouble is efficiency. The \emph{size} of the input $n$---the number of digits needed to write it---is about $\log n$. Trial division takes $\Omega(\sqrt{n})$ steps, which is \emph{exponential} in the input size. For a 300-digit number this is around $10^{150}$ steps: completely infeasible.
+
+\begin{defbox}[What ``efficient'' means]
+An algorithm is \emph{efficient} (runs in \textbf{polynomial time}) if its number of steps is bounded by a polynomial in the input size. For primality testing, the input has $\lfloor\log_2 n\rfloor + 1$ bits, so efficient means the algorithm terminates in at most $(\log n)^k$ steps for some fixed constant $k$, no matter how large $n$ is.
+\end{defbox}
+
+\subsection{Complexity landscape before AKS}
+
+It was long known that PRIMES $\in$ NP $\cap$ co-NP:
+\begin{itemize}
+  \item \textbf{co-NP}: a non-trivial factor of $n$ is a short, efficiently verifiable certificate of compositeness.
+  \item \textbf{NP}: Pratt (1975) showed every prime has a short certificate (a primitive root and the factorisation of $p-1$), verifiable in polynomial time.
+\end{itemize}
+Membership in NP $\cap$ co-NP strongly suggested PRIMES $\in$ P but did not prove it. Partial results:
+\begin{itemize}
+  \item \textbf{Miller (1976):} Deterministic poly-time, assuming the Extended Riemann Hypothesis (ERH).
+  \item \textbf{Rabin (1980), Solovay--Strassen (1977):} Unconditional but randomised (Monte Carlo).
+  \item \textbf{Adleman--Pomerance--Rumely (1983):} Deterministic, time $(\log n)^{O(\log\log\log n)}$---almost polynomial but not quite.
+  \item \textbf{Goldwasser--Kilian (1986), Adleman--Huang (1992):} Randomised elliptic curve methods, expected polynomial time.
+\end{itemize}
+
+\begin{thmbox}[The AKS result]
+There exists a \textbf{deterministic, unconditional, polynomial-time} algorithm that correctly decides whether any integer $n>1$ is prime. The running time is $\OO(\log^{21/2} n)$, and heuristically $\OO(\log^6 n)$ under a conjecture on Sophie Germain primes. This places PRIMES firmly in \textbf{P}.
+\end{thmbox}
+
+\section{The key identity (Lemma 2.1)}
+
+The entire algorithm rests on one algebraic fact.
+
+\begin{thmbox}[Lemma 2.1]
+Let $a \in \Z$, $n \geq 2$, $\gcd(a,n)=1$. Then
+\[
+  n \text{ is prime} \;\iff\; (X+a)^n \equiv X^n + a \pmod{n}
+\]
+as polynomials over $\Z_n$.
+\end{thmbox}
+
+\subsection{Why this identity works}
+
+Expand $(X+a)^n$ by the binomial theorem:
+\[
+  (X+a)^n = \sum_{i=0}^{n}\binom{n}{i}a^{n-i}X^i
+  = X^n + \binom{n}{1}a^{n-1}X^{n-1}+\cdots+\binom{n}{n-1}aX + a^n.
+\]
+We want this to equal $X^n + a$ modulo $n$. The endpoint terms give $X^n$ and $a^n$. Fermat's Little Theorem gives $a^n \equiv a \pmod{p}$ when $p$ is prime. So everything reduces to: do all \emph{middle coefficients} $\binom{n}{i}$ vanish modulo $n$ for $0 < i < n$?
+
+\textbf{Case 1: $n$ is prime.} For $0 < i < n$:
+\[
+  \binom{n}{i} = \frac{n!}{i!\,(n-i)!}.
+\]
+The numerator contains $n$ as a factor. Since $n$ is prime and $i,n-i < n$, neither $i!$ nor $(n-i)!$ contains $n$ as a factor. So $n \mid \binom{n}{i}$ for all $0<i<n$, and every middle coefficient vanishes. $\checkmark$
+
+\textbf{Case 2: $n$ is composite.} Let $q$ be a prime factor with $q^k \| n$ (meaning $q^k\mid n$ but $q^{k+1}\nmid n$). Consider $\binom{n}{q}$:
+\[
+  \binom{n}{q} = \frac{n(n-1)\cdots(n-q+1)}{q!}.
+\]
+The factor $q^k$ appears in the numerator from $n$. The denominator $q!$ contributes exactly $q^1$. So $q^{k-1} \| \binom{n}{q}$. Since $q^k \mid n$, the coefficient of $X^q$ is not zero mod $n$. \xmark
+
+\begin{exbox}[Concrete examples]
+\textbf{$n=5$ (prime), $a=1$:}
+$(X+1)^5 = X^5 + 5X^4+10X^3+10X^2+5X+1$.
+Mod 5: $5\to 0$, $10\to 0$, so $(X+1)^5 \equiv X^5+1 \pmod{5}$. Since $X^5+1 = X^n+a$: \checkmark
+
+\medskip\textbf{$n=4$ (composite), $a=1$:}
+$(X+1)^4 = X^4+4X^3+6X^2+4X+1$.
+Mod 4: $(X+1)^4 \equiv X^4+2X^2+1$.
+But $X^4+1 \neq X^4+2X^2+1$. The $X^2$ coefficient is 2, not 0. \xmark
+\end{exbox}
+
+\subsection{Why we cannot use this identity directly}
+
+The identity perfectly characterises primes. The problem is cost: evaluating $(X+a)^n$ as a polynomial requires computing $n+1$ coefficients, taking $\Omega(n)$ time---exponential in $\log n$. We need a way to compress the computation.
+
+\section{The key trick: working mod $X^r - 1$}
+
+\subsection{What ``mod $X^r - 1$'' means}
+
+We work in the ring $\Z_n[X]/(X^r-1)$: polynomial arithmetic modulo both $n$ (the integer) and $X^r-1$ (the polynomial).
+
+Setting $X^r - 1 = 0$ means $X^r \equiv 1$. So exponents on $X$ wrap around modulo $r$, like a clock with $r$ positions:
+\[
+  X^r \equiv 1,\quad X^{r+1}\equiv X,\quad X^{r+2}\equiv X^2,\quad\ldots
+\]
+A polynomial with $n+1$ terms collapses to at most $r$ terms, since all coefficients of $X^0, X^r, X^{2r},\ldots$ get summed into one slot, and similarly for each residue class mod $r$.
+
+\begin{exbox}[Clock example with $r=4$]
+$X^4\equiv 1$, $X^5\equiv X$, $X^6\equiv X^2$, $X^7\equiv X^3$, $X^8\equiv 1$, and so on.
+
+The polynomial $2X^7 + X^6 + 3X^5 + X^4 + X^2 + 1$ reduces modulo $X^4-1$ to:
+$2X^3 + X^2 + 3X + 1 + X^2 + 1 = 2X^3 + 2X^2 + 3X + 2$.
+Only 4 terms remain instead of 8.
+\end{exbox}
+
+Instead of checking $(X+a)^n \equiv X^n+a \pmod{n}$ exactly, we check the cheaper condition:
+\begin{equation}
+  (X+a)^n \equiv X^n + a \pmod{X^r-1,\; n}. \tag{$*$}
+\end{equation}
+Computing the left side via repeated squaring requires $O(\log n)$ multiplications of degree-$r$ polynomials with $O(\log n)$-bit coefficients, costing $\OO(r\log^2 n)$ total---polynomial in $\log n$ when $r = \mathrm{poly}(\log n)$.
+
+\subsection{The false positive problem and the fix}
+
+Primes still satisfy $(*)$: the original identity holds for primes, so reducing mod $X^r-1$ only preserves it. However, some composites can now \emph{also} satisfy $(*)$ for certain choices of $a$ and $r$. We have lost information by collapsing the ring.
+
+\begin{exbox}[Verifying $(*)$ for a prime and a composite]
+\textbf{$n=5$ (prime), $r=3$, $a=1$.}
+
+Left side: $(X+1)^5 = X^5+5X^4+10X^3+10X^2+5X+1$. Mod 5: $\equiv X^5+1$. Mod $X^3-1$: $X^5=X^{3+2}\equiv X^2$, so $\equiv X^2+1$.
+
+Right side: $X^5+1$. Mod $X^3-1$: $X^5\equiv X^2$, so $\equiv X^2+1$.
+
+Both sides $= X^2+1$. \checkmark
+
+\medskip\textbf{$n=4$ (composite), $r=3$, $a=1$.}
+
+Left: $(X+1)^4=X^4+4X^3+6X^2+4X+1$. Mod 4: $\equiv X^4+2X^2+1$. Mod $X^3-1$: $X^4\equiv X$, so $\equiv X+2X^2+1$.
+
+Right: $X^4+1$. Mod $X^3-1$: $\equiv X+1$.
+
+$X+2X^2+1 \neq X+1$. The $X^2$ coefficient exposes the composite. \xmark
+\end{exbox}
+
+\textbf{The fix:} test $(*)$ for \emph{many values} of $a$. For an appropriately chosen $r$, if $(*)$ holds for all $a = 1,\ldots,\ell$ where $\ell = \lfloor\sqrt{\varphi(r)}\log n\rfloor$, then $n$ must be a prime power. Since proper prime powers are ruled out by step 1, the algorithm concludes $n$ is prime. Why this works is the content of the correctness proof (Section~\ref{sec:correctness}).
+
+\subsection{How to choose $r$}
+
+We need $r$ with $\ord_r(n) > \log^2 n$, where $\ord_r(n)$ is the smallest $k$ with $n^k \equiv 1 \pmod{r}$. This condition ensures a certain group (built in the proof) is large enough.
+
+\begin{thmbox}[Lemma 4.3]
+There always exists $r \leq \max\{3,\lceil\log^5 n\rceil\}$ satisfying $\ord_r(n)>\log^2 n$.
+\end{thmbox}
+
+\textit{Proof sketch.} The product $n^{\lfloor\log B\rfloor}\cdot\prod_{i=1}^{\lfloor\log^2 n\rfloor}(n^i-1)$ with $B=\lceil\log^5 n\rceil$ is less than $2^B$. By the lcm lemma ($\mathrm{lcm}(1,\ldots,B)\geq 2^B$), this product cannot be divisible by every integer from 1 to $B$. The smallest $r\leq B$ not dividing the product satisfies $\gcd(r,n)=1$ and $\ord_r(n)>\log^2 n$. $\square$
+
+Since $r\leq\log^5 n$, the loop bound is $\ell = O(\sqrt{r}\log n) = O(\log^{7/2}n)$---polynomial in $\log n$.
+
+\section{The algorithm}
+
+\begin{thmbox}[The AKS Algorithm]
+\textbf{Input:} Integer $n>1$.
+\begin{enumerate}[label=\textbf{Step \arabic*.}, leftmargin=2.5cm, itemsep=4pt]
+  \item If $n = a^b$ for some $a\in\N$, $b>1$: output \textsc{Composite}.
+  \item Find the smallest $r$ with $\ord_r(n) > \log^2 n$.
+  \item If $1<\gcd(a,n)<n$ for some $a\leq r$: output \textsc{Composite}.
+  \item If $n \leq r$: output \textsc{Prime}.
+  \item For $a=1$ to $\lfloor\sqrt{\varphi(r)}\log n\rfloor$: if $(X+a)^n \not\equiv X^n+a \pmod{X^r-1, n}$, output \textsc{Composite}.
+  \item Output \textsc{Prime}.
+\end{enumerate}
+\end{thmbox}
+
+\subsection{What each step does and why}
+
+\textbf{Step 1: Rule out perfect powers.}
+If $n=a^b$ with $b>1$, then $n$ is composite. Check by trying all $b$ from 2 to $\log_2 n$ and testing if $n$ has an integer $b$-th root. Cost: $\OO(\log^3 n)$. This step is needed because the correctness proof will conclude $n$ must be a prime power; step 1 pre-emptively eliminates the higher prime powers so we can conclude $n=p$ at the end.
+
+\textbf{Step 2: Find $r$.}
+Sets up the polynomial ring. Search for the smallest $r$ with $\ord_r(n)>\log^2 n$. By Lemma 4.3, $r\leq\log^5 n$ exists. For each candidate $r$, test $n^k\not\equiv 1\pmod{r}$ for $k\leq\log^2 n$. Cost: $\OO(\log^7 n)$.
+
+\textbf{Step 3: Trial division up to $r$.}
+For each $a\leq r$, compute $\gcd(a,n)$. If any gcd is strictly between 1 and $n$, we have a non-trivial factor of $n$. Cost: $O(\log^6 n)$. This also guarantees $\gcd(n,r)=1$, which is needed by the correctness proof.
+
+\textbf{Step 4: Handle tiny $n$.}
+If $n\leq r$ and $n$ survived steps 1--3, then $n$ is prime. Why? A composite $n$ has a factor $\leq\sqrt{n}\leq r$, which step 3 would have caught. By Lemma 4.3 this only triggers for $n\leq 5{,}690{,}034$.
+
+\textbf{Step 5: The main loop.}
+For each $a=1,\ldots,\ell$, verify $(X+a)^n\equiv X^n+a\pmod{X^r-1,n}$. Any failure implies \textsc{Composite}. Cost per check: $\OO(r\log^2 n)$; total: $\OO(\log^{21/2}n)$.
+
+\textbf{Step 6: Output \textsc{Prime}.}
+Anything that survives all steps is prime, as proved in Section~\ref{sec:correctness}.
+
+\section{Correctness proof}
+\label{sec:correctness}
+
+We prove: \emph{if the algorithm outputs} \textsc{Prime} \emph{at step 6, then $n$ is prime.}
+
+\subsection{Setup}
+
+Suppose the algorithm reaches step 6. We know:
+\begin{itemize}[itemsep=2pt]
+  \item $n$ is not a perfect power (step 1 passed).
+  \item $\gcd(a,n)=1$ for all $a\leq r$; in particular $\gcd(n,r)=1$ (step 3 passed).
+  \item $n > r$ (step 4 did not trigger).
+  \item $\ord_r(n)>\log^2 n$ (by step 2).
+  \item For every $a$, $0\leq a\leq\ell$:
+  \[
+    (X+a)^n \equiv X^n+a \pmod{X^r-1, n}. \hfill\text{(step 5)}
+  \]
+\end{itemize}
+
+Let $p$ be \textbf{any prime factor of $n$}. Such a factor exists since $n>1$. We have $p\mid n$. Also $p>r$: if $p\leq r$ then $\gcd(p,n)=p\in(1,n)$ and step 3 would have caught it.
+
+\subsection{Extracting polynomial identities}
+
+\textbf{Identity (A): step 5 weakened to mod $p$.} Since $p\mid n$, any congruence mod $n$ is also one mod $p$:
+\begin{equation}
+  (X+a)^n \equiv X^n+a \pmod{X^r-1,\; p}, \quad 0\leq a\leq\ell. \tag{A}
+\end{equation}
+
+\textbf{Identity (B): Lemma 2.1 applied to the actual prime $p$.}
+\begin{equation}
+  (X+a)^p \equiv X^p+a \pmod{X^r-1,\; p}, \quad 0\leq a\leq\ell. \tag{B}
+\end{equation}
+
+\textbf{Identity (C): $n/p$ behaves like a prime.} Raise both sides of (B) to the power $n/p$:
+\[
+  [(X+a)^p]^{n/p} \equiv [X^p+a]^{n/p} \pmod{X^r-1,\;p}.
+\]
+The left side is $(X+a)^n$. By (A), $(X+a)^n\equiv X^n+a$. Also $X^n=(X^p)^{n/p}$, so:
+\begin{equation}
+  (X^p+a)^{n/p} \equiv (X^p)^{n/p}+a \pmod{X^r-1,\;p}. \tag{C}
+\end{equation}
+Writing $Y=X^p$: $(Y+a)^{n/p}\equiv Y^{n/p}+a$. This says $n/p$ satisfies the same polynomial identity that a prime would.
+
+\subsection{Introspective numbers}
+
+\begin{defbox}[Definition: introspective]
+A number $m\in\N$ is \emph{introspective for} polynomial $f(X)$ if
+\[
+  [f(X)]^m \equiv f(X^m) \pmod{X^r-1,\; p}.
+\]
+\end{defbox}
+
+\begin{intubox}[Intuition]
+Introspectivity says: ``raising $f$ to the power $m$ is the same as substituting $X^m$ into $f$.'' For a monomial this is trivial: $(X^k)^m = X^{km} = (X^m)^k$. For a sum of monomials it is a non-trivial structural condition. Think of it as saying that $m$ ``commutes with'' the polynomial $f$ in a specific way.
+\end{intubox}
+
+From our identities:
+\begin{itemize}
+  \item $p$ is introspective for $(X+a)$ for each $0\leq a\leq\ell$ \quad (identity B).
+  \item $n/p$ is introspective for $(X+a)$ for each $0\leq a\leq\ell$ \quad (identity C rewritten).
+\end{itemize}
+
+\subsection{Two closure lemmas}
+
+\begin{thmbox}[Lemma 4.5: products of introspective numbers]
+If $m$ and $m'$ are both introspective for $f(X)$, then $m\cdot m'$ is also introspective for $f(X)$.
+\end{thmbox}
+
+\textit{Proof.}
+\begin{align*}
+  [f(X)]^{m\cdot m'} &= \bigl[[f(X)]^m\bigr]^{m'} \\
+  &\equiv [f(X^m)]^{m'} && \text{(introspectivity of $m$)}\\
+  &\equiv f((X^m)^{m'}) = f(X^{m\cdot m'}) && \text{(introspectivity of $m'$, with $X\mapsto X^m$)}
+\end{align*}
+The last step uses the fact that $X^r-1$ divides $X^{mr}-1$, so the congruence mod $X^{mr}-1$ implies one mod $X^r-1$. $\square$
+
+\begin{thmbox}[Lemma 4.6: products of polynomials]
+If $m$ is introspective for both $f(X)$ and $g(X)$, then $m$ is introspective for $f(X)\cdot g(X)$.
+\end{thmbox}
+
+\textit{Proof.}
+\[
+  [f(X)\cdot g(X)]^m = [f(X)]^m\cdot[g(X)]^m \equiv f(X^m)\cdot g(X^m) = [f\cdot g](X^m). \quad\square
+\]
+
+\subsection{Building the sets $I$ and $P$}
+
+Starting from the two seeds, the closure lemmas let us expand to large sets.
+
+\textbf{Expanding via Lemma 4.5:} By multiplying $p$ and $n/p$ together in any combination and any number of times, every element of
+\[
+  I = \left\{\left(\tfrac{n}{p}\right)^i \cdot p^j \;\Big|\; i,j\geq 0\right\}
+\]
+is introspective for each $(X+a)$, $0\leq a\leq\ell$. (We start with $i=j=0$ giving 1, then $i=1,j=0$ giving $n/p$, and $i=0,j=1$ giving $p$, and build up by Lemma 4.5.)
+
+\textbf{Expanding via Lemma 4.6:} Since every $m\in I$ is introspective for each individual $(X+a)$, Lemma 4.6 lets us take products. Every element of
+\[
+  P = \left\{\prod_{a=0}^{\ell}(X+a)^{e_a}\;\Big|\; e_a\geq 0\right\}
+\]
+is a product of the building-block polynomials $(X+0),(X+1),\ldots,(X+\ell)$. Lemma 4.6 applied repeatedly shows every $m\in I$ is introspective for every $f\in P$.
+
+\begin{intubox}[What $P$ is concretely]
+$P$ contains all polynomials you can build by multiplying copies of $(X+0),(X+1),\ldots,(X+\ell)$ in any combination with any repetition. Examples: $X$, $(X+1)^3(X+2)^2$, $X(X+1)\cdots(X+\ell)$, and the constant $1$ (empty product). Lemma 4.6 says: if $m$ works introspectively for each building block, it works for every product of building blocks.
+\end{intubox}
+
+\subsection{Group $G$: residues of $I$ modulo $r$}
+
+Since $\gcd(n,r)=\gcd(p,r)=1$, every element of $I$ is a unit in $\Z_r^*$. The residues
+\[
+  G = \{m \bmod r \mid m\in I\} \subseteq \Z_r^*
+\]
+form a subgroup of $\Z_r^*$, generated by $n\bmod r$ and $p\bmod r$. Let $t = |G|$.
+
+\begin{thmbox}[Size of $G$]
+$t = |G| > \log^2 n$.
+\end{thmbox}
+
+\textit{Why?} $G$ contains all powers of $n$ modulo $r$. The cyclic subgroup generated by $n\bmod r$ alone has order $\ord_r(n)>\log^2 n$ (guaranteed by step 2). So $t\geq\ord_r(n)>\log^2 n$.
+
+\subsection{Group $\hat{G}$: images of $P$ in a finite field}
+
+The $r$-th cyclotomic polynomial $Q_r(X)$ over $\mathbb{F}_p$ divides $X^r-1$ and factors into irreducible polynomials of degree $\ord_r(p)$ over $\mathbb{F}_p$. Let $h(X)$ be one such irreducible factor. Since $p>r$, we have $\ord_r(p)>1$, so $\deg h > 1$. Define the field:
+\[
+  \mathcal{F} = \mathbb{F}_p[X]/(h(X)).
+\]
+In $\mathcal{F}$, $X$ is a primitive $r$-th root of unity (since $h\mid Q_r\mid X^r-1$, but $h$ has degree $>1$ so it is not $(X-1)$, hence $X\neq 1$ in $\mathcal{F}$, i.e., $X$ has order exactly $r$).
+
+Since $\deg h > 1$, the polynomial $h$ has no linear factors, so $X+a\neq 0$ in $\mathcal{F}$ for any integer $a$. Therefore every element of $P$ maps to a nonzero element of $\mathcal{F}$, and the images form a subgroup:
+\[
+  \hat{G} = \{f\bmod h(X) \mid f\in P\} \subseteq \mathcal{F}^*,
+\]
+generated by $X, X+1, X+2, \ldots, X+\ell$ in $\mathcal{F}$.
+
+\subsection{Lower bound on $|\hat{G}|$ --- Lemma 4.7 (Lenstra)}
+
+\begin{thmbox}[Lemma 4.7]
+$|\hat{G}| \geq \dbinom{t+\ell}{t-1} > n^{\sqrt{t}}$.
+\end{thmbox}
+
+\textit{Proof.} We show that distinct polynomials in $P$ of degree $<t$ give \emph{distinct} elements of $\hat{G}$.
+
+Suppose $f, g\in P$, $\deg f, \deg g < t$, and $f\neq g$ as polynomials, but $f\equiv g$ in $\mathcal{F}$. Since every $m\in I$ is introspective for both $f$ and $g$:
+\[
+  f(X^m)\equiv[f(X)]^m\equiv[g(X)]^m\equiv g(X^m) \quad\text{in }\mathcal{F}.
+\]
+So $X^m$ is a root of $Q(Y)=f(Y)-g(Y)$ for every $m\in G$. Each such $X^m$ is a primitive $r$-th root of unity in $\mathcal{F}$ (since $\gcd(m,r)=1$), and different $m\in G$ give different $X^m$ (since $X$ has order $r$). So $Q$ has $t$ distinct roots. But $\deg Q < t$---contradiction. Therefore $f=g$, contradicting our assumption. $\square$
+
+So all polynomials in $P$ of degree $<t$ inject into $\hat{G}$. The number of such polynomials is $\binom{t+\ell}{t-1}$ (choosing exponents $e_0,\ldots,e_\ell\geq 0$ summing to $<t$). Using $t>\log^2 n$ and $\ell\geq\lfloor\sqrt{t}\log n\rfloor$:
+\[
+  \binom{t+\ell}{t-1}\geq\binom{2\lfloor\sqrt{t}\log n\rfloor+1}{\lfloor\sqrt{t}\log n\rfloor} > 2^{\lfloor\sqrt{t}\log n\rfloor+1} \geq n^{\sqrt{t}}.
+\]
+
+\subsection{Upper bound on $|\hat{G}|$ --- Lemma 4.8}
+
+\begin{thmbox}[Lemma 4.8]
+If $n$ is not a power of $p$, then $|\hat{G}|\leq n^{\sqrt{t}}$.
+\end{thmbox}
+
+\textit{Proof.} Consider:
+\[
+  \hat{I} = \left\{\left(\tfrac{n}{p}\right)^i\cdot p^j \;\Big|\; 0\leq i,j\leq\lfloor\sqrt{t}\rfloor\right\} \subseteq I.
+\]
+If $n$ is not a power of $p$, then $n/p$ and $p$ are multiplicatively independent, so $\hat{I}$ has $(\lfloor\sqrt{t}\rfloor+1)^2 > t$ distinct elements as integers.
+
+Since $G$ has only $t$ residues mod $r$, by pigeonhole two elements of $\hat{I}$ agree mod $r$: say $m_1 > m_2$ with $m_1\equiv m_2\pmod{r}$. Then $X^{m_1}\equiv X^{m_2}$ in $\mathcal{F}$. For any $f\in\hat{G}$:
+\[
+  f^{m_1} \equiv f(X^{m_1}) \equiv f(X^{m_2}) \equiv f^{m_2} \quad\text{in }\mathcal{F}.
+\]
+Every element of $\hat{G}$ is a root of $Q'(Y)=Y^{m_1}-Y^{m_2}$, which has degree
+\[
+  m_1\leq\left(\tfrac{n}{p}\cdot p\right)^{\lfloor\sqrt{t}\rfloor} = n^{\lfloor\sqrt{t}\rfloor}\leq n^{\sqrt{t}}.
+\]
+So $|\hat{G}|\leq n^{\sqrt{t}}$. $\square$
+
+\subsection{The squeeze and conclusion}
+
+We have both:
+\begin{align*}
+  |\hat{G}| &> n^{\sqrt{t}} \quad\text{(Lemma 4.7, always)}\\
+  |\hat{G}| &\leq n^{\sqrt{t}} \quad\text{(Lemma 4.8, if $n$ is not a power of $p$)}
+\end{align*}
+
+These are contradictory. So $n$ \emph{is} a power of $p$: $n=p^k$ for some $k\geq 1$.
+
+Step 1 ruled out $k>1$. Therefore $k=1$, i.e., $n=p$---prime. $\square$
+
+\begin{thmbox}[Theorem 4.1]
+The AKS algorithm outputs \textsc{Prime} if and only if $n$ is prime.
+\end{thmbox}
+
+\begin{intubox}[The big picture of the proof]
+The proof is a squeeze on a group $\hat{G}$. On one side: the polynomial identity passing for many $a$'s forces $\hat{G}$ to be \emph{large}---distinct polynomials must map to distinct group elements, because introspectivity translates group elements into roots of a difference polynomial, and a nonzero polynomial of degree $<t$ cannot have $t$ roots. On the other side: if $n$ were not a prime power, a pigeonhole argument forces $\hat{G}$ to be \emph{small}---every element of $\hat{G}$ would satisfy a low-degree equation. Both cannot hold simultaneously, so $n$ is a prime power, and step 1 ensures it is actually prime.
+\end{intubox}
+
+\section{Time complexity}
+
+\begin{thmbox}[Theorem 5.1]
+The asymptotic time complexity of the AKS algorithm is $\OO(\log^{21/2} n)$.
+\end{thmbox}
+
+\textit{Proof.} We use the fact that arithmetic on $m$-bit integers and degree-$d$ polynomials with $m$-bit coefficients costs $\OO(m)$ and $\OO(d\cdot m)$ steps respectively.
+
+\begin{itemize}
+  \item \textbf{Step 1:} $\OO(\log^3 n)$.
+  \item \textbf{Step 2:} $O(\log^5 n)$ candidate values of $r$; for each, $O(\log^2 n)$ multiplications mod $r$ at cost $\OO(\log r)$ each. Total: $\OO(\log^7 n)$.
+  \item \textbf{Step 3:} $O(r)=O(\log^5 n)$ gcd computations at $O(\log n)$ each. Total: $O(\log^6 n)$.
+  \item \textbf{Step 4:} $O(\log n)$.
+  \item \textbf{Step 5:} $\ell=O(\sqrt{r}\log n)=O(\log^{7/2}n)$ iterations; each does $O(\log n)$ polynomial multiplications at cost $\OO(r\log n)$ each. Per iteration: $\OO(r\log^2 n)$. Total: $\OO(\log^{7/2}n\cdot\log^5 n\cdot\log^2 n)=\OO(\log^{21/2}n)$.
+\end{itemize}
+Step 5 dominates. $\square$
+
+\subsection{Improvements}
+
+\textbf{To $\OO(\log^{15/2} n)$ (unconditional).} Fouvry (1985) proved a positive density of primes $q$ with $P(q-1)>q^{2/3}$ (where $P(m)$ denotes the largest prime factor of $m$). This implies step 2 finds $r=O(\log^3 n)$, giving total cost $\OO(\log^{15/2}n)$.
+
+\textbf{To $\OO(\log^6 n)$ (unconditional).} Lenstra and Pomerance (2003) found a provably $\OO(\log^6 n)$ variant, without any conjecture.
+
+\textbf{Conjectural improvement to $\OO(\log^6 n)$.} The Sophie Germain Prime Density Conjecture (the number of Sophie Germain primes $q\leq m$ is $\sim 2C_2 m/\ln^2 m$) would imply an $r=\OO(\log^2 n)$ satisfying the step 2 condition, giving step 5 cost $\OO(\log^6 n)$.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Result} & \textbf{Time} & \textbf{Status}\\
+\midrule
+AKS original & $\OO(\log^{21/2}n)$ & Unconditional\\
+With Fouvry's theorem & $\OO(\log^{15/2}n)$ & Unconditional\\
+Lenstra--Pomerance variant & $\OO(\log^6 n)$ & Unconditional\\
+Under Sophie Germain conjecture & $\OO(\log^6 n)$ & Conditional\\
+Under Agrawal's conjecture & $\OO(\log^3 n)$ & Likely false\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Open questions}
+
+\textbf{Reducing the loop count.} Step 5 runs for $\ell=\lfloor\sqrt{\varphi(r)}\log n\rfloor$ iterations. If a smaller generating set for $\hat{G}$ could be proved sufficient, $\ell$ would shrink and the exponent would improve.
+
+\textbf{Agrawal's conjecture.} If $r$ is prime, $r\nmid n$, and $(X-1)^n\equiv X^n-1\pmod{X^r-1,n}$, then either $n$ is prime or $n^2\equiv 1\pmod{r}$. This was verified computationally for $r\leq 100$, $n\leq 10^{10}$. If true, a prime $r\in[2,4\log n]$ with $r\nmid n^2-1$ could be found (since the product of primes below $4\log n$ exceeds $n^2$), and checking the single congruence would give time $\OO(\log^3 n)$. However, Lenstra and Pomerance (2003) gave a heuristic argument that the conjecture is likely \emph{false}; variants with a larger lower bound on $r$ may still hold.
+
+\section{The complete proof in one place}
+
+Here is the entire argument distilled into ten logical steps:
+
+\begin{enumerate}[itemsep=6pt]
+  \item \textbf{The identity (Lemma 2.1).} $(X+a)^n\equiv X^n+a\pmod{n}$ holds for all $a$ with $\gcd(a,n)=1$ if and only if $n$ is prime. Proof: the middle binomial coefficients $\binom{n}{i}$ all vanish mod $n$ iff $n$ is prime.
+
+  \item \textbf{The compression.} Testing the identity exactly costs $\Omega(n)$ time. Working mod $X^r-1$ compresses each polynomial to degree $<r$, costing $\OO(r\log^2 n)$ per test.
+
+  \item \textbf{Choosing $r$ (Lemma 4.3).} We need $\ord_r(n)>\log^2 n$ to ensure later groups are large. Such $r\leq\log^5 n$ always exists.
+
+  \item \textbf{The loop.} Test $(*)$ for $a=1,\ldots,\ell=\lfloor\sqrt{\varphi(r)}\log n\rfloor$. Any failure implies composite. All passing implies proceeding.
+
+  \item \textbf{Seeds of introspectivity.} Let $p\mid n$ be any prime. From (B) and (C), both $p$ and $n/p$ are introspective for each $(X+a)$.
+
+  \item \textbf{Closure.} Lemma 4.5: products of introspective numbers are introspective. Lemma 4.6: introspectivity is preserved under polynomial multiplication. So all of $I=\{(n/p)^ip^j\}$ is introspective for all of $P$ (products of the $(X+a)$'s).
+
+  \item \textbf{Group $G$.} Residues of $I$ mod $r$ form a subgroup of $\Z_r^*$ of size $t>\log^2 n$ (guaranteed by step 2's condition on $\ord_r(n)$).
+
+  \item \textbf{Group $\hat{G}$.} Images of $P$ in $\mathcal{F}=\mathbb{F}_p[X]/(h)$ form a subgroup of $\mathcal{F}^*$. Lower bound (Lemma 4.7): $|\hat{G}|>n^{\sqrt{t}}$, because distinct low-degree polynomials in $P$ map to distinct elements---otherwise their difference has $t$ roots but degree $<t$, impossible.
+
+  \item \textbf{Upper bound (Lemma 4.8).} If $n$ is not a power of $p$, then $\hat{I}$ has $>t$ elements but only $t$ residues mod $r$, so two agree (pigeonhole), forcing every element of $\hat{G}$ to satisfy a polynomial of degree $\leq n^{\sqrt{t}}$. So $|\hat{G}|\leq n^{\sqrt{t}}$.
+
+  \item \textbf{Conclusion.} The bounds $|\hat{G}|>n^{\sqrt{t}}$ and $|\hat{G}|\leq n^{\sqrt{t}}$ contradict each other. So $n=p^k$ for some $k$. Step 1 ruled out $k>1$, so $n=p$ is prime.
+\end{enumerate}
+
+\vspace{1em}
+\hrule
+\vspace{0.5em}
+\begin{center}
+\small These notes are a self-contained companion to Agrawal, Kayal, Saxena,\\
+``PRIMES is in P,'' \textit{Annals of Mathematics} \textbf{160}(2) (2004), 781--793.
+\end{center}
+
+\end{document}

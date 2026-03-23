@@ -4,66 +4,33 @@ This repository documents my journey toward understanding primality testing and 
 
 ## Roadmap
 
-| Phase                 | Topic                          |
-| --------------------- | ------------------------------ |
-| Foundations           | Complexipty classes BPP        |
-| Foundations           | Deterministic vs probabilistic |
-| Foundations           | Chinese remainder theorem      |
-| Foundations           | Intro to polynomial rings      |
-| Foundations           | Meaning of (Z/nZ)[x]           |
-| Fermat                | Example run                    |
-| Fermat                | Carmichael numbers intro       |
-| Fermat                | Carmichael example             |
-| Fermat                | Why Fermat fails               |
-| Probabilistic         | Quadratic residues intro       |
-| Probabilistic         | Euler criterion                |
-| Probabilistic         | Jacobi symbol                  |
-| Probabilistic         | Solovay-Strassen algorithm     |
-| Probabilistic         | Solovay-Strassen example       |
-| Probabilistic         | Error probability analysis     |
-| Probabilistic         | Miller-Rabin idea              |
-| Probabilistic         | Decomposition of n-1           |
-| Probabilistic         | Strong pseudoprime concept     |
-| Probabilistic         | Miller-Rabin algorithm         |
-| Probabilistic         | Miller-Rabin example           |
-| Probabilistic         | Compare all tests              |
-| Deterministic barrier | What is GRH                    |
-| Deterministic barrier | Miller under GRH               |
-| Deterministic barrier | Why randomness removal matters |
-| Deterministic barrier | ECPP high level                |
-| Deterministic barrier | ECPP intuition                 |
-| Algebraic shift       | Polynomial expansion behavior  |
-| Algebraic shift       | Binomial theorem mod n         |
-| Algebraic shift       | Identity for primes            |
-| Algebraic shift       | Failure for composites         |
-| Algebraic shift       | Cyclotomic idea overview       |
-| Algebraic shift       | Motivation for AKS             |
-| AKS                   | AKS statement                  |
-| AKS                   | Core identity intuition        |
-| AKS                   | Identity examples              |
-| AKS                   | Algorithm step overview        |
-| AKS                   | Perfect power check            |
-| AKS                   | Finding r                      |
-| AKS                   | Order of n mod r               |
-| AKS                   | Polynomial congruence step     |
-| AKS                   | Bound on a values              |
-| AKS                   | Correctness intuition          |
-| AKS                   | Proof structure                |
-| AKS                   | Agrawal conjecture idea        |
-| AKS                   | Why conjecture not needed      |
-| Post-AKS              | Runtime improvements           |
-| Post-AKS              | Lenstra-Pomerance idea         |
-| Post-AKS              | Practical comparison           |
-| Post-AKS              | BPSW mention                   |
-| Post-AKS              | Theory vs practice gap         |
-| Research              | Granville survey read          |
-| Research              | List open problems             |
-| Research              | Pick one problem               |
-| Research              | Study P vs BPP                 |
-| Research              | Derandomization idea           |
-| Research              | Quantum angle basics           |
-| Research              | Prepare discussion questions   |
-| Research              | Write observations             |
+| Phase         | Topic                          |
+| ------------- | ------------------------------ |
+| Fermat        | Code                           |
+| Probabilistic | Solovay-Strassen               |
+| Probabilistic | Miller-Rabin                   |
+| Probabilistic | Compare all tests              |
+| Deterministic | What is GRH                    |
+| Deterministic | Miller under GRH               |
+| Deterministic | Why randomness removal matters |
+| Deterministic | ECPP                           |
+| Deterministic | Cyclotomic idea overview       |
+| Deterministic | Motivation for AKS             |
+| Deterministic | AKS statement                  |
+| Deterministic | Why conjecture not needed      |
+| Post-AKS      | Runtime improvements           |
+| Post-AKS      | Lenstra-Pomerance idea         |
+| Post-AKS      | Practical comparison           |
+| Post-AKS      | BPSW mention                   |
+| Post-AKS      | Theory vs practice gap         |
+| Research      | Granville survey read          |
+| Research      | List open problems             |
+| Research      | Pick one problem               |
+| Research      | Study P vs BPP                 |
+| Research      | Derandomization idea           |
+| Research      | Quantum angle basics           |
+| Research      | Prepare discussion questions   |
+| Research      | Write observations             |
 
 
 ## What this repo contains
