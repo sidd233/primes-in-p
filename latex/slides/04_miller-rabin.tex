@@ -1,0 +1,355 @@
+\documentclass{beamer}
+
+\usetheme{metropolis}
+
+\title{Miller-Rabin Primality Test}
+\author{Siddharth \& Amit}
+\date{\today}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+\maketitle
+
+%------------------------------------------------
+\section{Motivation}
+
+\begin{frame}{Why Not Fermat?}
+
+\begin{itemize}
+    \item Fermat test is fast but unreliable
+    \item Carmichael numbers fool it for all bases
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Goal}
+Design a test that:
+\begin{itemize}
+    \item Remains fast
+    \item Dramatically reduces error
+\end{itemize}
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Key Idea}
+
+\begin{frame}{Structure of $n-1$}
+
+Let $n$ be odd. Write:
+\[
+n-1 = 2^s d \quad \text{with } d \text{ odd}
+\]
+
+\vspace{1em}
+
+\begin{itemize}
+    \item This decomposition is unique
+    \item Central to Miller--Rabin test
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Core Observation}
+
+If $n$ is prime and $\gcd(a,n)=1$:
+\[
+a^{n-1} \equiv 1 \pmod{n}
+\]
+
+\vspace{1em}
+
+So:
+\[
+a^{2^s d} \equiv 1 \pmod{n}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Chain of Squares}
+
+Define:
+\[
+x_0 = a^d, \quad x_1 = a^{2d}, \quad x_2 = a^{4d}, \dots
+\]
+
+\[
+x_{i+1} = x_i^2 \pmod{n}
+\]
+
+\vspace{1em}
+
+Eventually:
+\[
+x_s = a^{2^s d} \equiv 1 \pmod{n}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Critical Property (Primes)}
+
+If $n$ is prime:
+
+\begin{itemize}
+    \item Either $x_0 \equiv 1 \pmod{n}$
+    \item Or some $x_i \equiv -1 \pmod{n}$
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Why?}
+Because $-1$ is the only nontrivial square root of $1$ modulo a prime
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Key Lemma}
+
+\begin{frame}{Nontrivial Square Roots}
+
+\begin{block}{Lemma}
+If $p$ is prime and:
+\[
+x^2 \equiv 1 \pmod{p}
+\]
+then:
+\[
+x \equiv \pm 1 \pmod{p}
+\]
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Proof}
+
+\[
+x^2 \equiv 1 \Rightarrow (x-1)(x+1) \equiv 0 \pmod{p}
+\]
+
+\vspace{1em}
+
+Since $p$ is prime:
+\[
+p \mid (x-1) \quad \text{or} \quad p \mid (x+1)
+\]
+
+\vspace{1em}
+
+\[
+\Rightarrow x \equiv 1 \ \text{or} \ -1 \pmod{p}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Implication}
+
+\begin{itemize}
+    \item If we ever find:
+    \[
+    x_i^2 \equiv 1 \pmod{n}
+    \]
+    but
+    \[
+    x_i \not\equiv \pm 1
+    \]
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Conclusion}
+$n$ must be composite
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Miller--Rabin Test}
+
+\begin{frame}{Algorithm}
+
+\begin{enumerate}
+    \item Write $n-1 = 2^s d$
+    \item Pick random $a$
+    \item Compute $x = a^d \bmod n$
+    \item If $x=1$ or $x=n-1$, continue
+    \item Repeat squaring:
+    \[
+    x \leftarrow x^2 \bmod n
+    \]
+    \item If $x = n-1$, continue
+    \item If $x = 1$, return composite
+    \item Otherwise, return composite
+\end{enumerate}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Example: $n = 561$ (Carmichael Number)}
+
+\[
+561 = 3 \cdot 11 \cdot 17
+\]
+
+\[
+n - 1 = 560 = 2^4 \cdot 35
+\]
+
+Choose $a = 2$
+
+\vspace{0.5em}
+
+\textbf{Step 1:}
+\[
+x_0 = 2^{35} \bmod 561 = 263
+\]
+
+\vspace{0.5em}
+
+
+
+\end{frame}
+\begin{frame}
+\textbf{Step 2: Repeated squaring}
+\[
+\begin{aligned}
+    x_1 &= 263^2 \bmod 561 = 166 \\
+    x_2 &= 166^2 \bmod 561 = 67 \\
+    x_3 &= 67^2 \bmod 561 = 1
+\end{aligned}
+\]
+\begin{block}{Observation}
+We found $x_i = 1$ but previous value $\neq \pm1$
+\end{block}
+
+\[
+67 \not\equiv \pm 1 \pmod{561}
+\]
+
+\vspace{0.5em}
+
+\begin{block}{Conclusion}
+561 is \bld{composite}
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Witnesses}
+
+\begin{itemize}
+    \item If test declares composite $\Rightarrow$ correct
+    \item Such $a$ is called a \itl{witness}
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{If no witness found}
+$n$ is \bld{probably prime}
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Correctness}
+
+\begin{frame}{Error Probability}
+
+\begin{block}{Theorem}
+If $n$ is composite, then at least $\frac{3}{4}$ of choices of $a$ detect it
+\end{block}
+
+\vspace{1em}
+
+\[
+\Rightarrow \text{Error probability} \le \left(\frac{1}{4}\right)^k
+\]
+
+After $k$ independent iterations:
+\[
+\Pr[\text{error}] \le \left(\frac{1}{4}\right)^k
+\]
+
+\vspace{0.5em}
+
+For $k = 5$:
+\[
+\Pr[\text{error}] \le \left(\frac{1}{4}\right)^5 = \frac{1}{1024} \approx 0.1\%
+\]
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Comparison with Fermat}
+
+\begin{itemize}
+    \item Fermat can fail for all $a$ (Carmichael)
+    \item Miller--Rabin fails for at most $1/4$ of $a$
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Conclusion}
+Exponentially stronger reliability
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Complexity}
+
+\begin{frame}{Time Complexity}
+
+\begin{itemize}
+    \item Modular exponentiation: $\bigO((\log n)^3)$
+    \item $k$ iterations:
+\end{itemize}
+
+\[
+\bigO(k (\log n)^3)
+\]
+
+\vspace{1em}
+
+\begin{block}{Practical}
+Very fast and widely used
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Takeaway}
+
+\begin{itemize}
+    \item Fermat: fast but unreliable
+    \item Miller--Rabin: fast and highly reliable
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Big Picture}
+Randomization + structure $\Rightarrow$ powerful primality testing
+\end{block}
+
+\end{frame}
+
+\end{document}

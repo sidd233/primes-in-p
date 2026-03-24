@@ -1,0 +1,1067 @@
+\documentclass{beamer}
+
+\usetheme{metropolis}
+
+\title{The AKS Algorithm}
+\author{Siddharth \& Amit}
+\date{\today}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+
+%------------------------------------------------
+\section{The Breakthrough}
+
+\begin{frame}{The Question}
+
+\begin{center}
+\Large
+Is primality testing in $\mathbf{P}$?
+\end{center}
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Fermat: fast but unreliable
+    \item Miller-Rabin: fast, probabilistic
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{AKS (2002)}
+\begin{center}
+\textbf{PRIMES is in $\mathbf{P}$}
+\end{center}
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{What AKS Achieves}
+
+\begin{itemize}
+    \item Deterministic
+    \item Unconditional
+    \item Polynomial time
+\end{itemize}
+
+\vspace{1em}
+
+\[
+\text{Time: } \bigO((\log n)^{c})
+\]
+
+\vspace{1em}
+
+\begin{block}{Significance}
+First proof that primality testing is efficiently solvable
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Key Identity}
+
+\begin{frame}{The Core Idea}
+
+\begin{block}{Key Identity}
+$n$ is prime iff:
+\[
+(X+a)^n \equiv X^n + a \pmod{n}
+\]
+\end{block}
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Holds for all $a$ with $\gcd(a,n)=1$
+    \item Comes from binomial expansion
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Proof ($\Rightarrow$ direction)}
+
+Assume $n$ is prime.
+
+\vspace{0.5em}
+
+\[
+(X+a)^n = \sum_{i=0}^{n} \binom{n}{i} a^{n-i} X^i
+\]
+
+\vspace{0.5em}
+
+For $0 < i < n$:
+\[
+\begin{aligned}
+    \binom{n}{i} = \frac{n!}{i!(n-i)!}
+\end{aligned}
+\]
+\vspace{0.5em}
+
+\[
+\Rightarrow \binom{n}{i} \equiv 0 \pmod{n}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Proof (continued)}
+
+Thus:
+\[
+(X+a)^n \equiv X^n + a^n \pmod{n}
+\]
+
+\vspace{1em}
+
+By Fermat's Little Theorem:
+\[
+a^n \equiv a \pmod{n}
+\]
+
+\vspace{1em}
+
+\[
+\Rightarrow (X+a)^n \equiv X^n + a \pmod{n}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Proof ($\Leftarrow$ direction)}
+
+Assume:
+\[
+(X+a)^n \equiv X^n + a \pmod{n}
+\]
+
+\vspace{1em}
+
+Suppose $n$ is composite.
+
+Let $q^k \parallel n$ (largest power of $q$ dividing $n$).
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Proof (continued)}
+
+Consider coefficient:
+\[
+\binom{n}{q} = \frac{n(n-1)\cdots(n-q+1)}{q!}
+\]
+
+\vspace{1em}
+
+\[
+\begin{aligned}
+    \binom{n}{q} = \frac{q^{k-1}(n-1)\cdots(n-q+1)}{(q-1)!}
+\end{aligned}
+\]
+
+\vspace{1em}
+
+\[
+\Rightarrow \binom{n}{q} \not\equiv 0 \pmod{n}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}{Example: Prime Case ($n=5$)}
+
+\[
+(X+1)^5 = X^5 + 5X^4 + 10X^3 + 10X^2 + 5X + 1
+\]
+
+\vspace{1em}
+
+Modulo $5$:
+\[
+(X+1)^5 \equiv X^5 + 1 \pmod{5}
+\]
+
+\vspace{1em}
+
+\begin{block}{Observation}
+All middle coefficients vanish modulo $5$
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Pascal Triangle Insight}
+
+Row $5$ of Pascal's Triangle:
+
+\[
+\begin{array}{c}
+1 \\
+1\;1 \\
+1\;2\;1 \\
+1\;3\;3\;1 \\
+1\;4\;6\;4\;1 \\
+1\;5\;10\;10\;5\;1
+\end{array}
+\]
+
+\vspace{1em}
+
+\begin{itemize}
+    \item For prime $p$, all interior entries are divisible by $p$
+    \item Only the endpoints are $1$
+\end{itemize}
+
+\vspace{1em}
+
+\[
+\Rightarrow (X+a)^p \equiv X^p + a \pmod{p}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Example: Composite Case ($n=4$)}
+
+\[
+(X+1)^4 = X^4 + 4X^3 + 6X^2 + 4X + 1
+\]
+
+\vspace{1em}
+
+Modulo $4$:
+\[
+(X+1)^4 \equiv X^4 + 2X^2 + 1 \pmod{4}
+\]
+
+\vspace{1em}
+
+\begin{block}{Observation}
+Middle coefficient $6 \equiv 2 \pmod{4}$ does not vanish
+\end{block}
+
+\vspace{0.5em}
+
+\[
+\Rightarrow \text{Identity fails}
+\]
+
+\end{frame}
+
+\begin{frame}{Why Not Use This Directly?}
+
+\begin{itemize}
+    \item The identity gives a \textbf{perfect characterization} of primes
+\end{itemize}
+
+\vspace{1em}
+
+\[
+(X+a)^n = \sum_{i=0}^{n} \binom{n}{i} a^{n-i} X^i
+\]
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Polynomial has $n+1$ terms
+    \item Computing it requires $\Omega(n)$ operations
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Problem}
+Input size is $\log n$, but runtime is $\Omega(n)$
+\end{block}
+
+\vspace{0.5em}
+
+\begin{block}{Conclusion}
+Exponential time $\Rightarrow$ not efficient
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{The Trick}
+
+\begin{frame}{Reducing the Cost}
+
+Work modulo:
+\[
+X^r - 1
+\]
+
+\vspace{1em}
+
+\begin{itemize}
+    \item $X^r \equiv 1$
+    \item Degrees wrap around
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Effect}
+Polynomial size reduces from $n$ to $r$
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{New Test}
+
+Check:
+\[
+(X+a)^n \equiv X^n + a \pmod{X^r -1,\; n}
+\]
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Much faster
+    \item Works for primes
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Issue}
+Some composites may now pass
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Fixing False Positives}
+
+\begin{itemize}
+    \item Work modulo $X^r - 1$ (compression)
+    \item Test multiple values of $a$
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Key Condition}
+\[
+\mathrm{ord}_r(n) > (\log n)^2
+\]
+\end{block}
+
+\vspace{0.5em}
+
+\begin{itemize}
+    \item Ensures composite numbers cannot satisfy identity for many $a$
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+\begin{frame}{What is $\mathrm{ord}_r(n)$?}
+
+\begin{block}{Definition}
+\[
+\mathrm{ord}_r(n) = \min\{k > 0 \mid n^k \equiv 1 \pmod{r}\}
+\]
+\end{block}
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Measures how $n$ behaves modulo $r$
+    \item Captures the \textbf{cycle length} of powers of $n$
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Example}
+\[
+2^3 \equiv 1 \pmod{7} \Rightarrow \mathrm{ord}_7(2) = 3
+\]
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Why Do We Need Large Order?}
+
+\begin{itemize}
+    \item We want:
+\[
+\mathrm{ord}_r(n) > (\log n)^2
+\]
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Reason}
+Ensures $n$ does not behave ``periodically'' too early modulo $r$
+\end{block}
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Prevents composite numbers from mimicking primes
+    \item Forces large algebraic structure in the proof
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+%------------------------------------------------
+
+\begin{frame}{Existence of $r$}
+
+\begin{block}{Lemma}
+There exists $r \le (\log n)^5$ such that:
+\[
+\mathrm{ord}_r(n) > (\log n)^2
+\]
+\end{block}
+
+\vspace{0.5em}
+
+\textbf{Proof.}
+
+Let:
+\[
+B = \lceil (\log n)^5 \rceil
+\]
+
+Assume for contradiction that for all $r \le B$:
+\[
+\mathrm{ord}_r(n) \le (\log n)^2
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Key Construction}
+
+Then for every $r \le B$, there exists $k \le (\log n)^2$ such that:
+\[
+n^k \equiv 1 \pmod{r}
+\]
+
+\[
+\Rightarrow r \mid (n^k - 1)
+\]
+
+\vspace{1em}
+
+Thus every $r \le B$ divides:
+\[
+N = \prod_{k=1}^{\lfloor (\log n)^2 \rfloor} (n^k - 1)
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Bounding $N$}
+
+Each term:
+\[
+n^k - 1 < n^k
+\]
+
+So:
+\[
+N < \prod_{k=1}^{(\log n)^2} n^k = n^{\sum_{k=1}^{(\log n)^2} k}
+\]
+
+\[
+= n^{\frac{(\log n)^2((\log n)^2 + 1)}{2}} \le n^{(\log n)^4}
+\]
+
+\[
+= 2^{(\log n)^5}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Contradiction via LCM}
+
+But if every $r \le B$ divides $N$, then:
+\[
+\mathrm{lcm}(1,2,\dots,B) \mid N
+\]
+
+\vspace{1em}
+
+\begin{block}{Fact}
+\[
+\mathrm{lcm}(1,2,\dots,B) \ge 2^B
+\]
+\end{block}
+
+\vspace{1em}
+
+Thus:
+\[
+2^B \le N < 2^{(\log n)^5}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Final Contradiction}
+
+Recall:
+\[
+B = (\log n)^5
+\]
+
+So:
+\[
+2^B = 2^{(\log n)^5}
+\]
+
+But we showed:
+\[
+N < 2^{(\log n)^5}
+\]
+
+\vspace{1em}
+
+\[
+\Rightarrow 2^B \nmid N
+\]
+
+\vspace{1em}
+
+\begin{block}{Contradiction}
+Not all $r \le B$ can divide $N$
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+    \item There exists some $r \le (\log n)^5$ such that:
+\[
+\mathrm{ord}_r(n) > (\log n)^2
+\]
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Key Insight}
+If all orders were small, too many numbers would divide too small a number
+\end{block}
+
+\end{frame}
+
+
+
+%------------------------------------------------
+\section{The Algorithm}
+
+\begin{frame}{AKS Algorithm}
+
+\begin{enumerate}
+    \item Check if $n = a^b$ for some $b > 1$
+    \item Find smallest $r$ with $\mathrm{ord}_r(n) > (\log n)^2$
+    \item If $\gcd(a,n) > 1$ for some $a \le r$, output composite
+    \item If $n \le r$, output prime
+    \item For $a = 1$ to $O(\sqrt{r}\log n)$:
+    \[
+    (X+a)^n \equiv X^n + a \pmod{X^r -1, n}
+    \]
+    \item Output prime
+\end{enumerate}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Why Each Step Matters}
+
+\begin{itemize}
+    \item Step 1: removes perfect powers
+    \item Step 2: ensures strong algebraic structure
+    \item Step 3: detects small factors quickly
+    \item Step 4: handles small cases
+    \item Step 5: main polynomial test
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Key Point}
+All steps together eliminate every possible composite
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Why the Polynomial Test Works}
+
+\begin{itemize}
+    \item Identity must hold for primes
+    \item Modulo $X^r -1$, information is compressed
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Key Idea}
+If identity holds for many $a$, then $n$ behaves like a prime in a strong algebraic sense
+\end{block}
+
+\end{frame}
+%------------------------------------------------
+
+\begin{frame}{Correctness: Setup}
+
+Assume the algorithm reaches the final step and outputs \textsc{Prime}.
+
+\vspace{0.5em}
+
+Then:
+\begin{itemize}
+    \item $n$ is not a perfect power
+    \item $\gcd(a,n)=1$ for all $a \le r$
+    \item $\mathrm{ord}_r(n) > (\log n)^2$
+    \item For all $1 \le a \le \ell$:
+\[
+(X+a)^n \equiv X^n + a \pmod{X^r-1,\, n}
+\]
+\end{itemize}
+
+\vspace{0.5em}
+
+Let $p$ be any prime divisor of $n$.
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Reducing Modulo $p$}
+
+Since $p \mid n$:
+\[
+(X+a)^n \equiv X^n + a \pmod{X^r-1,\, p}
+\]
+
+\vspace{1em}
+
+Also, since $p$ is prime:
+\[
+(X+a)^p \equiv X^p + a \pmod{p}
+\]
+
+\vspace{1em}
+
+Raise both sides to power $n/p$:
+\[
+(X+a)^n \equiv (X^p + a)^{n/p}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Key Identity}
+
+Combining:
+\[
+(X^p + a)^{n/p} \equiv X^n + a \pmod{X^r-1,\, p}
+\]
+
+\vspace{1em}
+
+Let $Y = X^p$:
+\[
+(Y + a)^{n/p} \equiv Y^{n/p} + a
+\]
+
+\vspace{1em}
+
+\begin{block}{Observation}
+$n/p$ satisfies the same identity as a prime
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Introspective Property}
+
+Define:
+\[
+f(X)^m \equiv f(X^m) \pmod{X^r-1,\, p}
+\]
+
+\vspace{1em}
+
+Then:
+\begin{itemize}
+    \item $p$ satisfies this for $f(X)=X+a$
+    \item $n/p$ also satisfies it
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Closure}
+Products of such numbers also satisfy this property
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Building a Large Set}
+
+Define:
+\[
+I = \{ (n/p)^i \cdot p^j \mid i,j \ge 0 \}
+\]
+
+\vspace{1em}
+
+All elements of $I$ satisfy:
+\[
+f(X)^m \equiv f(X^m)
+\]
+
+\vspace{1em}
+
+Reduce modulo $r$:
+\[
+G = \{ m \bmod r \mid m \in I \}
+\]
+
+\vspace{1em}
+
+\[
+|G| > (\log n)^2
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Another Structure}
+
+Consider polynomials:
+\[
+P = \left\{ \prod (X+a)^{e_a} \right\}
+\]
+
+\vspace{1em}
+
+Their images modulo an irreducible factor form a group:
+\[
+\hat{G}
+\]
+
+\vspace{1em}
+
+\begin{block}{Key Result}
+\[
+|\hat{G}| > n^{\sqrt{|G|}}
+\]
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Upper Bound}
+
+If $n$ is not a power of $p$:
+
+\[
+|\hat{G}| \le n^{\sqrt{|G|}}
+\]
+
+\vspace{1em}
+
+\begin{block}{Contradiction}
+\[
+|\hat{G}| > n^{\sqrt{|G|}} \quad \text{and} \quad |\hat{G}| \le n^{\sqrt{|G|}}
+\]
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Conclusion}
+
+Thus:
+\[
+n = p^k
+\]
+
+\vspace{1em}
+
+From Step 1:
+\[
+k = 1
+\]
+
+\vspace{1em}
+
+\begin{block}{Final Result}
+\[
+n = p \Rightarrow n \text{ is prime}
+\]
+\end{block}
+
+\end{frame}
+%------------------------------------------------
+%------------------------------------------------
+
+\begin{frame}{Complexity Overview}
+
+Let input size be:
+\[
+k = \log n
+\]
+
+\vspace{1em}
+
+\begin{block}{Goal}
+Show AKS runs in polynomial time in $k$
+\end{block}
+
+\vspace{1em}
+
+We analyze each step of the algorithm.
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Step 1: Perfect Power Check}
+
+\begin{itemize}
+    \item Try all exponents $b \le \log n$
+    \item Compute integer $b$-th roots
+\end{itemize}
+
+\vspace{1em}
+
+\[
+\text{Time} = \bigO((\log n)^3)
+\]
+
+\vspace{1em}
+
+\begin{block}{Reason}
+Polynomial-time arithmetic on $\log n$-bit numbers
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Step 2: Finding $r$}
+
+We search for smallest $r$ such that:
+\[
+\mathrm{ord}_r(n) > (\log n)^2
+\]
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Try $r \le (\log n)^5$
+    \item For each $r$, test powers up to $(\log n)^2$
+\end{itemize}
+
+\vspace{1em}
+
+\[
+\text{Time} = \bigO((\log n)^7)
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Step 3: GCD Checks}
+
+\begin{itemize}
+    \item Compute $\gcd(a,n)$ for $a \le r$
+\end{itemize}
+
+\vspace{1em}
+
+\[
+r = \bigO((\log n)^5)
+\]
+
+\[
+\text{Time per gcd} = \bigO(\log n)
+\]
+
+\vspace{1em}
+
+\[
+\Rightarrow \text{Total} = \bigO((\log n)^6)
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Step 5: Main Bottleneck}
+
+We check:
+\[
+(X+a)^n \equiv X^n + a \pmod{X^r-1,\, n}
+\]
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Number of $a$ values:
+\[
+\ell = \bigO(\sqrt{r}\log n)
+\]
+\end{itemize}
+
+\vspace{1em}
+
+\[
+r = \bigO((\log n)^5) \Rightarrow \ell = \bigO((\log n)^{7/2})
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Cost Per Iteration}
+
+Compute $(X+a)^n \bmod (X^r-1, n)$:
+
+\begin{itemize}
+    \item Use repeated squaring: $\bigO(\log n)$ steps
+    \item Each multiplication:
+    \begin{itemize}
+        \item Degree $\le r$
+        \item Coefficients size $\log n$
+    \end{itemize}
+\end{itemize}
+
+\vspace{1em}
+
+\[
+\text{Cost per multiplication} = \bigO(r \log n)
+\]
+
+\vspace{1em}
+
+\[
+\Rightarrow \text{Per iteration} = \bigO(r (\log n)^2)
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Total Complexity}
+
+\[
+\text{Total} = \ell \cdot \bigO(r (\log n)^2)
+\]
+
+\vspace{1em}
+
+Substitute:
+\[
+\ell = (\log n)^{7/2}, \quad r = (\log n)^5
+\]
+
+\vspace{1em}
+
+\[
+\Rightarrow \bigO((\log n)^{7/2} \cdot (\log n)^5 \cdot (\log n)^2)
+\]
+
+\[
+= \bigO((\log n)^{21/2})
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Improvements}
+
+\begin{itemize}
+    \item Better bounds on $r$ reduce complexity
+    \item Improved algorithms achieve:
+\[
+\bigO((\log n)^6)
+\]
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Key Insight}
+All steps are polynomial in $\log n$
+\end{block}
+
+\end{frame}
+\begin{frame}{Comparison}
+
+\begin{itemize}
+    \item Fermat: fast, unreliable
+    \item Miller--Rabin: fast, probabilistic
+    \item AKS: deterministic, polynomial
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Trade-off}
+AKS is theoretically important, but slower in practice
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Takeaway}
+
+\begin{center}
+\Large
+Randomness is not necessary.
+\end{center}
+
+\vspace{1em}
+
+\begin{block}{Conclusion}
+Primality testing is fundamentally efficient
+\end{block}
+
+\end{frame}
+
+\end{document}

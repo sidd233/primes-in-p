@@ -1,0 +1,403 @@
+\documentclass{beamer}
+
+\usetheme{metropolis}
+
+\title{Fermat's Test: Fast, Elegant, and Slightly Untrustworthy}
+\author{Siddharth \& Amit}
+\date{\today}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+%------------------------------------------------
+\section{Probabilistic Primality Testing}
+
+\begin{frame}{From Heuristics to Probability}
+
+\begin{itemize}
+    \item Heuristic tests can fail without warning
+    \item Probabilistic tests provide \bld{provable error bounds}
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Key Idea}
+We allow a small probability of error in exchange for efficiency
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{General Structure}
+
+\begin{enumerate}
+    \item Randomly pick $a$
+    \item Check a number-theoretic condition involving $a$ and $n$
+    \item If it fails $\Rightarrow$ $n$ is composite
+    \item Otherwise, repeat
+\end{enumerate}
+
+\vspace{1em}
+
+\begin{block}{Terminology}
+If $a$ proves compositeness, it is called a \itl{witness}
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Outcome}
+
+\begin{itemize}
+    \item If any test fails $\Rightarrow$ definitely composite
+    \item If all tests pass $\Rightarrow$ \bld{probably prime}
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Guarantee}
+Error probability decreases exponentially with repetitions
+\end{block}
+
+\end{frame}
+%------------------------------------------------
+\section{Fermat Primality Test}
+
+\begin{frame}{The Idea}
+
+If $a^{n-1} \not\equiv 1 \pmod{n}$, then $n$ is composite.
+
+\vspace{1em}
+
+If $a^{n-1} \equiv 1 \pmod{n}$, then $n$ is \itl{probably prime}.
+
+\vspace{1em}
+
+\begin{block}{Definition}
+If $n$ is composite but satisfies
+\[
+a^{n-1} \equiv 1 \pmod{n},
+\]
+then $n$ is a \bld{pseudoprime to base $a$}.
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Example}
+
+\[
+n = 341 = 11 \cdot 31
+\]
+
+\[
+2^{340} \equiv 1 \pmod{341}
+\]
+
+\vspace{1em}
+
+\begin{block}{Observation}
+341 is composite but passes the test (base 2)
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Fermat's Little Theorem}
+
+\begin{frame}{Statement}
+
+\begin{block}{Theorem}
+Let $p$ be prime and $p \nmid a$. Then
+\[
+a^{p-1} \equiv 1 \pmod{p}.
+\]
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Setup for Proof}
+
+Consider:
+\[
+S = \{1,2,3,\dots,p-1\}
+\]
+
+Multiply each element by $a$:
+\[
+aS = \{a,2a,3a,\dots,(p-1)a\}
+\]
+
+\vspace{1em}
+
+\begin{block}{Claim}
+$aS\pmod{p}$ is a permutation of $S$
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Proof: Uniqueness}
+
+Assume:
+\[
+ai \equiv aj \pmod{p}
+\]
+
+Then:
+\[
+a(i-j) \equiv 0 \pmod{p}
+\]
+
+Since $\gcd(a,p)=1$, $a$ is invertible:
+\[
+i \equiv j \pmod{p}
+\]
+
+Since $1 \le i,j \le p-1$, we get $i=j$.
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Proof: Non-Zero Elements}
+
+For any $i \in S$:
+\[
+ai \not\equiv 0 \pmod{p}
+\]
+
+since neither $a$ nor $i$ is divisible by $p$.
+
+\vspace{1em}
+
+Thus, $aS$ consists of $p-1$ distinct nonzero residues.
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Proof: Final Step}
+
+Multiply all elements:
+
+\[
+a \cdot 2a \cdots (p-1)a \equiv 1 \cdot 2 \cdots (p-1) \pmod{p}
+\]
+
+\[
+a^{p-1}(p-1)! \equiv (p-1)! \pmod{p}
+\]
+
+Since $(p-1)! \not\equiv 0 \pmod{p}$:
+
+\[
+a^{p-1} \equiv 1 \pmod{p}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+\section{Algorithm}
+
+\begin{frame}{Fermat Test Algorithm}
+
+\begin{enumerate}
+    \item Pick random $a$ with $\gcd(a,n)=1$
+    \item Compute $a^{n-1} \bmod n$
+    \item If $\neq 1$ $\Rightarrow$ composite
+    \item Else $\Rightarrow$ probably prime
+\end{enumerate}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Time Complexity}
+
+\begin{itemize}
+    \item Modular exponentiation: $\bigO(\log n)$ multiplications
+    \item Each multiplication: $\bigO((\log n)^2)$
+\end{itemize}
+
+\[
+\Rightarrow \bigO((\log n)^3)
+\]
+
+\vspace{1em}
+
+With $k$ iterations:
+\[
+\bigO(k (\log n)^3)
+\]
+
+\end{frame}
+
+%------------------------------------------------
+\section{Limitations}
+
+\begin{frame}{Pseudoprimes}
+
+\begin{itemize}
+    \item Some composites pass the test
+    \item Rare, but they exist
+    \item There are only 21853 pseudoprimes base 2 that are less than $2.5\times10^{10}$. This means that for $n$ upto $2.5\times10^{10}$, Fermat's test fails only $8.7\times{10^{-5}}\%$ of times, 
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Carmichael Numbers}
+
+\begin{block}{Definition}
+$n$ is Carmichael if:
+\[
+a^{n-1} \equiv 1 \pmod{n}
+\quad \forall a \text{ with } \gcd(a,n)=1
+\]
+\end{block}
+
+\vspace{1em}
+
+\begin{block}{Implication}
+Fermat test fails for \bld{all} bases
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Korselt's Criterion}
+
+A composite $n$ is Carmichael iff:
+
+\begin{itemize}
+    \item $n$ is square-free
+    \item For every prime $p \mid n$:
+    \[
+    p-1 \mid n-1
+    \]
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Example: 561}
+
+\[
+561 = 3 \cdot 11 \cdot 17
+\]
+
+\[
+\begin{aligned}
+2 &\mid 560 \\
+10 &\mid 560 \\
+16 &\mid 560
+\end{aligned}
+\]
+
+\vspace{1em}
+
+\[
+a^{560} \equiv 1 \pmod{561}
+\]
+
+for all $\gcd(a,561)=1$
+
+\end{frame}
+
+%------------------------------------------------
+%------------------------------------------------
+
+\begin{frame}{Carmichael Numbers are Not Rare}
+
+\begin{block}{Theorem (Alford--Granville--Pomerance, 1994)}
+There are infinitely many Carmichael numbers.
+\end{block}
+
+\vspace{1em}
+
+\begin{itemize}
+    \item Infinitely many composite numbers satisfy:
+    \[
+    a^{n-1} \equiv 1 \pmod{n} \quad \forall \gcd(a,n)=1
+    \]
+    \item Fermat test fails on \bld{every base} for such $n$
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Implication}
+Fermat's test is fundamentally unreliable in the worst case
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Generating Carmichael Numbers}
+
+\begin{block}{Korselt's Criterion}
+$n$ is Carmichael iff:
+\begin{itemize}
+    \item $n$ is square-free
+    \item For every prime $p \mid n$:
+    \[
+    p - 1 \mid n - 1
+    \]
+\end{itemize}
+\end{block}
+
+\vspace{1em}
+
+\textbf{Construction Idea:}
+\begin{itemize}
+    \item Choose distinct primes $p_1, \dots, p_k$
+    \item Form $n = p_1 p_2 \cdots p_k$
+    \item Ensure $p_i - 1 \mid n - 1$ for all $i$
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Reality}
+Generates Carmichael numbers, but requires search
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Conclusion}
+
+\begin{itemize}
+    \item Fast: polynomial time
+    \item Simple: easy to implement
+    \item Flawed: fooled by Carmichael numbers
+\end{itemize}
+
+\vspace{1em}
+
+\begin{block}{Takeaway}
+Useful as a filter, not a proof of primality
+\end{block}
+
+\end{frame}
+
+\end{document}

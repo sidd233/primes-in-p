@@ -1,0 +1,276 @@
+\documentclass{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+
+\title{Prime Time}
+\author{Siddharth \& Amit}
+\date{\today}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\section{The Problem of PRIMES}
+
+\begin{frame}{Mathematical Definition}
+    Let $n \in \mathbb{Z}$ with $n > 1$. Determine whether $n$ is \textbf{prime}.
+\end{frame}
+
+\begin{frame}{PRIMES as a Decision Problem}
+
+\textbf{Input:} An integer $n > 1$
+
+\textbf{Output:}
+\begin{itemize}
+    \item YES if $n$ is prime
+    \item NO otherwise
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Language Formulation}
+
+We define the language:
+
+\[
+\textbf{PRIMES} = \{\, n \in \mathbb{Z} \mid n > 1 \text{ and } n \text{ is prime} \,\}
+\]
+
+Equivalently (binary encoding):
+
+\[
+\textbf{PRIMES} = \{\, \langle n \rangle \mid n \text{ is prime} \,\}
+\]
+
+where $\langle n \rangle$ is the binary representation of $n$.
+
+\end{frame}
+
+\begin{frame}{Computational Question}
+
+\begin{block}{Goal}
+Design an algorithm that decides whether:
+\[
+n \in \textbf{PRIMES}
+\]
+\end{block}
+
+\pause
+
+\begin{itemize}
+    \item How efficiently can we decide this?
+    \item Is $\textbf{PRIMES} \in \mathbf{P}$?
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Trial Division is a Lie}
+
+\textbf{Idea:} Check if $n$ is divisible by any integer up to $\sqrt{n}$
+
+\[
+\text{Time} = O(\sqrt{n})
+\]
+
+\pause
+
+Let $k = \log n$ (input size)
+
+\[
+\sqrt{n} = n^{1/2} = (2^k)^{1/2} = 2^{k/2}
+\]
+
+\pause
+
+\begin{block}{Key Insight}
+$O(\sqrt{n}) = O(2^{k/2})$ is \textbf{exponential in input size}
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Why This is Bad}
+
+\begin{itemize}
+    \item Input size is $k = \log n$
+    \item Algorithm runs in $O(2^{k/2})$
+\end{itemize}
+
+\pause
+
+\begin{block}{Conclusion}
+Trial division is \textbf{EXP time}, not polynomial
+\end{block}
+
+\pause
+
+\begin{center}
+\Large
+\textit{Can we do better?}
+\end{center}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{The Core Question}
+
+\begin{block}{Computational Problem}
+Does there exist a deterministic algorithm that decides primality in time polynomial in $k$?
+\end{block}
+
+\pause
+
+\begin{center}
+\Large
+\[
+\textbf{PRIMES} \stackrel{?}{\in} \mathbf{P}
+\]
+\end{center}
+
+\end{frame}
+
+%------------------------------------------------
+
+\section{Improving Trial Division}
+
+\begin{frame}{Wheel Factorization (Idea)}
+
+Instead of testing all numbers:
+
+\begin{itemize}
+    \item First check divisibility by small primes
+    \item Skip numbers that are obviously composite
+\end{itemize}
+
+\pause
+
+Example:
+\begin{itemize}
+    \item Check $2$
+    \item Then only test odd numbers
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Primorials}
+
+\[
+c\# = \prod_{p \le c} p
+\]
+
+\pause
+
+\begin{itemize}
+    \item Product of all primes $\le c$
+    \item Used to eliminate large chunks of candidates
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Key Observation}
+
+All integers can be written as:
+
+\[
+x = c\# \cdot k + i
+\]
+
+\pause
+
+Only values of $i$ that are \textbf{coprime to $c\#$} can yield primes
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Example: $6\# = 30$}
+
+\[
+30 = 2 \cdot 3 \cdot 5
+\]
+
+All $x \ge 30$ can be written as:
+\[
+x = 30k + i
+\]
+
+Eliminate residues divisible by $2,3,5$
+
+\[
+i \in \{1,7,11,13,17,19,23,29\}
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Search Space Reduction}
+
+\begin{itemize}
+    \item Total residues: $30$
+    \item Valid candidates: $8$
+\end{itemize}
+
+\[
+\text{Reduction} = 1 - \frac{8}{30} = 76.67\%
+\]
+
+\begin{block}{Important}
+These are \textbf{candidates}, not guaranteed primes
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Limitations}
+
+\begin{itemize}
+    \item Still need to test divisibility
+    \item Must check primes $\le \sqrt{n}$
+\end{itemize}
+
+\begin{block}{Conclusion}
+Wheel factorization reduces constants, \\
+but does \textbf{not} change exponential nature
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Towards Better Methods}
+
+\begin{itemize}
+    \item Repeated elimination ideas lead to:
+    \item \textbf{Sieve of Eratosthenes}
+\end{itemize}
+
+\begin{block}{Big Picture}
+We need fundamentally different ideas \\
+to get polynomial time
+\end{block}
+
+\end{frame}
+
+\end{document}

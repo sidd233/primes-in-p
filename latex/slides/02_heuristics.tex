@@ -1,0 +1,294 @@
+\documentclass{beamer}
+
+\usetheme{metropolis}
+\usecolortheme{dolphin}
+
+\title{Fast Answers, Occasional Lies}
+\author{Siddharth \& Amit}
+\date{\today}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bld}[1]{\textbf{#1}}
+\newcommand{\itl}[1]{\textit{#1}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\bigO}{\mathcal{O}}
+
+\begin{document}
+
+\maketitle
+
+%------------------------------------------------
+\section{Heuristic Primality Testing}
+
+\begin{frame}{Why Heuristics?}
+
+\begin{itemize}
+    \item Exact methods (e.g., trial division) are inefficient
+    \item We seek \bld{fast} methods for large integers
+    \item Trade-off: speed vs certainty
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{General Strategy}
+
+\begin{itemize}
+    \item Use algebraic properties satisfied by primes
+    \item Check if $n$ behaves like a prime
+    \item Reject quickly if a contradiction appears
+\end{itemize}
+
+
+\begin{block}{Key Idea}
+Primes satisfy strong structural constraints
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Euclid's Algorithm}
+
+\begin{frame}{The GCD Primitive}
+
+\[
+\gcd(a,b) = \gcd(b, a \bmod b)
+\]
+
+
+\begin{itemize}
+    \item Based on the division algorithm
+    \item Reduces problem size at each step
+\end{itemize}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Algorithm}
+
+Given $a > b$:
+
+\begin{enumerate}
+    \item $r = a \bmod b$
+    \item $a \leftarrow b,\quad b \leftarrow r$
+    \item Repeat until $b = 0$
+    \item Output $a$
+\end{enumerate}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Example}
+
+\[
+\gcd(48,18)
+= \gcd(18,12)
+= \gcd(12,6)
+= \gcd(6,0)
+= 6
+\]
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Why It Matters}
+
+\begin{itemize}
+    \item Runs in $\bigO(\log n)$ time
+
+    \item Detects non-trivial factors efficiently
+\end{itemize}
+
+
+\begin{block}{Application}
+If $\gcd(a,n) > 1$, then $n$ is composite
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+\section{Wilson's Theorem}
+
+\begin{frame}{Statement}
+
+\begin{block}{Wilson's Theorem}
+$n$ is prime $\iff (n-1)! \equiv -1 \bmod n$
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Proof}
+Suppose that $n$ is composite. Then there exists a prime $q$ such that
+\[
+2 \leq q < n \quad \text{and} \quad q \mid n.
+\]
+Hence, there exists an integer $k$ such that
+\[
+n = qk.
+\]
+\pause
+Assume for contradiction that
+\[
+(n-1)! \equiv -1 \pmod{n}.
+\]
+Then there exists an integer $m$ such that
+\[
+(n-1)! = nm - 1 = (qk)m - 1 = q(km) - 1.
+\]
+
+\end{frame}
+
+\begin{frame}{Proof}
+Thus, $(n-1)!$ is one less than a multiple of $q$, which implies
+\[
+(n-1)! \equiv -1 \pmod{q}.
+\]
+\pause
+On the other hand, since $2 \leq q \leq n-1$, the integer $q$ appears among the factors in
+\[
+(n-1)! = (n-1)(n-2)\cdots 2 \cdot 1.
+\]
+Therefore,
+\[
+(n-1)! \equiv 0 \pmod{q}.
+\]
+
+This is a contradiction. Hence,
+$
+(n-1)! \not\equiv -1 \pmod{n}
+$
+when $n$ is composite.
+    
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Interpretation}
+
+\begin{itemize}
+    \item Complete characterization of primes
+
+    \item No false positives or negatives
+\end{itemize}
+
+
+\begin{block}{Philosophy}
+Primes exhibit strong symmetry in modular arithmetic
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Why Not Use It?}
+
+\begin{itemize}
+    \item Requires computing $(n-1)!$
+
+    \item Time complexity: $\Omega(n)$
+\end{itemize}
+
+
+\begin{block}{Conclusion}
+Exact, but computationally infeasible
+\end{block}
+
+\end{frame}
+
+\section{Selfridge's Conjecture}
+
+\begin{frame}{Statement}
+
+Let $p$ be odd with $p \equiv \pm 2 \bmod 5$
+
+
+If:
+\[
+2^{p-1} \equiv 1 \bmod p
+\]
+\[
+F_{p+1} \equiv 0 \bmod p
+\]
+
+
+Then $p$ is prime
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{What is Happening?}
+
+\begin{itemize}
+    \item First condition: Fermat test (base 2)
+
+    \item Second condition: Fibonacci structure
+\end{itemize}
+
+
+\begin{block}{Insight}
+Combining independent constraints strengthens the test
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Generalization}
+
+\begin{itemize}
+    \item Uses Fibonacci polynomials $F_n(x)$
+
+    \item Based on quadratic non-residues
+\end{itemize}
+
+
+\begin{block}{Theme}
+Arithmetic + algebraic structure $\Rightarrow$ stronger tests
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Status}
+
+\begin{itemize}
+    \item Selfridge, Pomerance and Wagstaff together offered \$620 for a counterexample or proof that there is none, with the prize now due from the Number Theory Foundation.
+    \item Still unproven
+\end{itemize}
+
+
+\begin{block}{Impact}
+Led to the Baillie--PSW primality test
+\end{block}
+
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}{Summary}
+
+\begin{itemize}
+    \item Euclid: fast arithmetic backbone
+
+    \item Wilson: exact but impractical
+
+    \item Fermat: fast but imperfect
+
+    \item Selfridge: stronger heuristic, still unproven
+\end{itemize}
+
+\end{frame}
+
+\end{document}
