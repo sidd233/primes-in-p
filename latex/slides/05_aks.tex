@@ -1,10 +1,11 @@
 \documentclass{beamer}
 
-\usetheme{metropolis}
-
+\usetheme{Madrid}
+\usecolortheme{seahorse}
 \title{The AKS Algorithm}
-\author{Siddharth \& Amit}
+\author{Siddharth Narayan Mishra}
 \date{\today}
+\setbeamertemplate{navigation symbols}{}
 
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\bigO}{\mathcal{O}}
@@ -23,14 +24,12 @@
 Is primality testing in $\mathbf{P}$?
 \end{center}
 
-\vspace{1em}
 
 \begin{itemize}
     \item Fermat: fast but unreliable
     \item Miller-Rabin: fast, probabilistic
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{AKS (2002)}
 \begin{center}
@@ -50,13 +49,11 @@ Is primality testing in $\mathbf{P}$?
     \item Polynomial time
 \end{itemize}
 
-\vspace{1em}
 
 \[
 \text{Time: } \bigO((\log n)^{c})
 \]
 
-\vspace{1em}
 
 \begin{block}{Significance}
 First proof that primality testing is efficiently solvable
@@ -76,7 +73,6 @@ $n$ is prime iff:
 \]
 \end{block}
 
-\vspace{1em}
 
 \begin{itemize}
     \item Holds for all $a$ with $\gcd(a,n)=1$
@@ -101,14 +97,10 @@ Assume $n$ is prime.
 
 For $0 < i < n$:
 \[
-\begin{aligned}
-    \binom{n}{i} = \frac{n!}{i!(n-i)!}
-\end{aligned}
+\binom{n}{i} = \frac{n!}{i!(n-i)!}
 \]
-\vspace{0.5em}
-
 \[
-\Rightarrow \binom{n}{i} \equiv 0 \pmod{n}
+\binom{n}{i} \equiv 0 \pmod{n}
 \]
 
 \end{frame}
@@ -122,14 +114,12 @@ Thus:
 (X+a)^n \equiv X^n + a^n \pmod{n}
 \]
 
-\vspace{1em}
 
 By Fermat's Little Theorem:
 \[
 a^n \equiv a \pmod{n}
 \]
 
-\vspace{1em}
 
 \[
 \Rightarrow (X+a)^n \equiv X^n + a \pmod{n}
@@ -146,7 +136,6 @@ Assume:
 (X+a)^n \equiv X^n + a \pmod{n}
 \]
 
-\vspace{1em}
 
 Suppose $n$ is composite.
 
@@ -158,23 +147,47 @@ Let $q^k \parallel n$ (largest power of $q$ dividing $n$).
 
 \begin{frame}{Proof (continued)}
 
-Consider coefficient:
+Let $q^k \parallel n$ (i.e., $q^k \mid n$ but $q^{k+1} \nmid n$).
+
+\vspace{0.5em}
+
+Consider:
 \[
 \binom{n}{q} = \frac{n(n-1)\cdots(n-q+1)}{q!}
 \]
 
-\vspace{1em}
+\vspace{0.5em}
 
+Rewrite:
 \[
-\begin{aligned}
-    \binom{n}{q} = \frac{q^{k-1}(n-1)\cdots(n-q+1)}{(q-1)!}
-\end{aligned}
+\binom{n}{q}
+= \frac{q^k (n-1)\cdots(n-q+1)}{q \cdot (q-1)!}
+= \frac{q^{k-1}(n-1)\cdots(n-q+1)}{(q-1)!}
 \]
 
-\vspace{1em}
+\end{frame}
+\begin{frame}
+
+\textbf{Key point:}
+
+\begin{itemize}
+\item Numerator contains exactly $q^{k-1}$ as the highest power of $q$
+\item None of $(n-1), \dots, (n-q+1)$ are divisible by $q$
+\item Denominator $(q-1)!$ contains no factor of $q$
+\end{itemize}
+
+\vspace{0.5em}
+
+So $\binom{n}{q}$ contains exactly $q^{k-1}$ as a factor.
+
+\vspace{0.5em}
+
+But $n$ contains $q^k$ as a factor.
 
 \[
-\Rightarrow \binom{n}{q} \not\equiv 0 \pmod{n}
+n \nmid \binom{n}{q}
+\quad \Rightarrow \quad
+\binom{n}{q} \not\equiv 0 \pmod{n}
 \]
 
 \end{frame}
@@ -189,14 +202,12 @@ Consider coefficient:
 (X+1)^5 = X^5 + 5X^4 + 10X^3 + 10X^2 + 5X + 1
 \]
 
-\vspace{1em}
 
 Modulo $5$:
 \[
 (X+1)^5 \equiv X^5 + 1 \pmod{5}
 \]
 
-\vspace{1em}
 
 \begin{block}{Observation}
 All middle coefficients vanish modulo $5$
@@ -221,18 +232,10 @@ Row $5$ of Pascal's Triangle:
 \end{array}
 \]
 
-\vspace{1em}
-
 \begin{itemize}
     \item For prime $p$, all interior entries are divisible by $p$
     \item Only the endpoints are $1$
 \end{itemize}
-
-\vspace{1em}
-
-\[
-\Rightarrow (X+a)^p \equiv X^p + a \pmod{p}
-\]
 
 \end{frame}
 
@@ -244,14 +247,12 @@ Row $5$ of Pascal's Triangle:
 (X+1)^4 = X^4 + 4X^3 + 6X^2 + 4X + 1
 \]
 
-\vspace{1em}
 
 Modulo $4$:
 \[
 (X+1)^4 \equiv X^4 + 2X^2 + 1 \pmod{4}
 \]
 
-\vspace{1em}
 
 \begin{block}{Observation}
 Middle coefficient $6 \equiv 2 \pmod{4}$ does not vanish
@@ -271,20 +272,17 @@ Middle coefficient $6 \equiv 2 \pmod{4}$ does not vanish
     \item The identity gives a \textbf{perfect characterization} of primes
 \end{itemize}
 
-\vspace{1em}
 
 \[
 (X+a)^n = \sum_{i=0}^{n} \binom{n}{i} a^{n-i} X^i
 \]
 
-\vspace{1em}
 
 \begin{itemize}
     \item Polynomial has $n+1$ terms
     \item Computing it requires $\Omega(n)$ operations
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{Problem}
 Input size is $\log n$, but runtime is $\Omega(n)$
@@ -308,17 +306,53 @@ Work modulo:
 X^r - 1
 \]
 
-\vspace{1em}
 
 \begin{itemize}
     \item $X^r \equiv 1$
     \item Degrees wrap around
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{Effect}
 Polynomial size reduces from $n$ to $r$
+\end{block}
+
+\end{frame}
+
+\begin{frame}{Example: Working Modulo $X^r - 1$}
+
+Let $r = 5$. Then:
+\[
+X^5 \equiv 1 \pmod{X^5 - 1}
+\]
+
+
+\textbf{Example: Reduce } $X^7$
+
+\[
+X^7 = X^{5+2} = X^5 \cdot X^2 \equiv 1 \cdot X^2 = X^2
+\]
+
+
+\end{frame}
+\begin{frame}
+\textbf{Example: Reduce a polynomial}
+
+\[
+f(X) = X^7 + 3X^6 + 2X^2
+\]
+
+\[
+X^7 \equiv X^2,\quad X^6 = X^{5+1} \equiv X
+\]
+
+\[
+\Rightarrow f(X) \equiv X^2 + 3X + 2X^2 = 3X^2 + 3X
+\]
+
+
+\begin{block}{Key Idea}
+Every time degree $\ge r$, replace $X^r$ by $1$ and reduce
 \end{block}
 
 \end{frame}
@@ -332,14 +366,12 @@ Check:
 (X+a)^n \equiv X^n + a \pmod{X^r -1,\; n}
 \]
 
-\vspace{1em}
 
 \begin{itemize}
     \item Much faster
     \item Works for primes
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{Issue}
 Some composites may now pass
@@ -356,7 +388,6 @@ Some composites may now pass
     \item Test multiple values of $a$
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{Key Condition}
 \[
@@ -381,14 +412,12 @@ Some composites may now pass
 \]
 \end{block}
 
-\vspace{1em}
 
 \begin{itemize}
     \item Measures how $n$ behaves modulo $r$
     \item Captures the \textbf{cycle length} of powers of $n$
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{Example}
 \[
@@ -409,13 +438,11 @@ Some composites may now pass
 \]
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{Reason}
 Ensures $n$ does not behave ``periodically'' too early modulo $r$
 \end{block}
 
-\vspace{1em}
 
 \begin{itemize}
     \item Prevents composite numbers from mimicking primes
@@ -466,7 +493,6 @@ n^k \equiv 1 \pmod{r}
 \Rightarrow r \mid (n^k - 1)
 \]
 
-\vspace{1em}
 
 Thus every $r \le B$ divides:
 \[
@@ -508,7 +534,6 @@ But if every $r \le B$ divides $N$, then:
 \mathrm{lcm}(1,2,\dots,B) \mid N
 \]
 
-\vspace{1em}
 
 \begin{block}{Fact}
 \[
@@ -516,7 +541,6 @@ But if every $r \le B$ divides $N$, then:
 \]
 \end{block}
 
-\vspace{1em}
 
 Thus:
 \[
@@ -544,13 +568,11 @@ But we showed:
 N < 2^{(\log n)^5}
 \]
 
-\vspace{1em}
 
 \[
 \Rightarrow 2^B \nmid N
 \]
 
-\vspace{1em}
 
 \begin{block}{Contradiction}
 Not all $r \le B$ can divide $N$
@@ -568,12 +590,6 @@ Not all $r \le B$ can divide $N$
 \mathrm{ord}_r(n) > (\log n)^2
 \]
 \end{itemize}
-
-\vspace{1em}
-
-\begin{block}{Key Insight}
-If all orders were small, too many numbers would divide too small a number
-\end{block}
 
 \end{frame}
 
@@ -610,7 +626,6 @@ If all orders were small, too many numbers would divide too small a number
     \item Step 5: main polynomial test
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{Key Point}
 All steps together eliminate every possible composite
@@ -618,22 +633,6 @@ All steps together eliminate every possible composite
 
 \end{frame}
 
-%------------------------------------------------
-
-\begin{frame}{Why the Polynomial Test Works}
-
-\begin{itemize}
-    \item Identity must hold for primes
-    \item Modulo $X^r -1$, information is compressed
-\end{itemize}
-
-\vspace{1em}
-
-\begin{block}{Key Idea}
-If identity holds for many $a$, then $n$ behaves like a prime in a strong algebraic sense
-\end{block}
-
-\end{frame}
 %------------------------------------------------
 
 \begin{frame}{Correctness: Setup}
@@ -668,14 +667,12 @@ Since $p \mid n$:
 (X+a)^n \equiv X^n + a \pmod{X^r-1,\, p}
 \]
 
-\vspace{1em}
 
 Also, since $p$ is prime:
 \[
 (X+a)^p \equiv X^p + a \pmod{p}
 \]
 
-\vspace{1em}
 
 Raise both sides to power $n/p$:
 \[
@@ -693,14 +690,12 @@ Combining:
 (X^p + a)^{n/p} \equiv X^n + a \pmod{X^r-1,\, p}
 \]
 
-\vspace{1em}
 
 Let $Y = X^p$:
 \[
 (Y + a)^{n/p} \equiv Y^{n/p} + a
 \]
 
-\vspace{1em}
 
 \begin{block}{Observation}
 $n/p$ satisfies the same identity as a prime
@@ -717,7 +712,6 @@ Define:
 f(X)^m \equiv f(X^m) \pmod{X^r-1,\, p}
 \]
 
-\vspace{1em}
 
 Then:
 \begin{itemize}
@@ -725,7 +719,6 @@ Then:
     \item $n/p$ also satisfies it
 \end{itemize}
 
-\vspace{1em}
 
 \begin{block}{Closure}
 Products of such numbers also satisfy this property
@@ -739,24 +732,21 @@ Products of such numbers also satisfy this property
 
 Define:
 \[
-I = \{ (n/p)^i \cdot p^j \mid i,j \ge 0 \}
+    I = \left\{\, \left(\frac{n}{p}\right)^{\!i} \cdot p^{j} \;\middle|\; i,j \ge 0 \,\right\}
 \]
 
-\vspace{1em}
 
 All elements of $I$ satisfy:
 \[
 f(X)^m \equiv f(X^m)
 \]
 
-\vspace{1em}
 
 Reduce modulo $r$:
 \[
 G = \{ m \bmod r \mid m \in I \}
 \]
 
-\vspace{1em}
 
 \[
 |G| > (\log n)^2
@@ -764,304 +754,678 @@ G = \{ m \bmod r \mid m \in I \}
 
 \end{frame}
 
-%------------------------------------------------
-
-\begin{frame}{Another Structure}
-
-Consider polynomials:
+%------------------------------------------------------------
+\begin{frame}{$I$ Contains All Powers of $n$}
+Recall $n = p \cdot \frac{n}{p}$, so setting $i = j$ gives:
 \[
-P = \left\{ \prod (X+a)^{e_a} \right\}
+    \left(\frac{n}{p}\right)^{\!i} \cdot p^i \;=\; n^i \;\in\; I \qquad \text{for all } i \ge 0.
 \]
+\vspace{0.5em}
 
+In particular, $I$ contains:
+\[
+    n^0,\; n^1,\; n^2,\; \ldots
+\]
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{Defining $G$}
+We reduce every element of $I$ modulo $r$:
+\[
+    G = \{\, m \bmod r \mid m \in I \,\}
+\]
+\vspace{0.5em}
+
+Think of $G$ as the set of ``fingerprints'' that elements of $I$
+leave when divided by $r$.
 \vspace{1em}
 
-Their images modulo an irreducible factor form a group:
+Since $I$ contains all powers of $n$, $G$ contains in particular:
 \[
-\hat{G}
+    n^0 \bmod r,\quad n^1 \bmod r,\quad n^2 \bmod r,\quad \ldots
 \]
+\vspace{0.5em}
 
+The question is: how many of these are distinct?
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{How Many Distinct Powers of $n$ Are There mod $r$?}
+The powers $n^0, n^1, n^2, \ldots$ eventually repeat modulo $r$.
 \vspace{1em}
 
-\begin{block}{Key Result}
-\[
-|\hat{G}| > n^{\sqrt{|G|}}
-\]
-\end{block}
+The number of distinct values among $\{n^i \bmod r\}$ is exactly
+$\mathrm{ord}_r(n)$ --- the smallest positive $k$ such that $n^k \equiv 1 \pmod{r}$.
+\vspace{1em}
 
+Specifically, the values:
+\[
+    n^0 \bmod r,\quad n^1 \bmod r,\quad \ldots,\quad n^{\mathrm{ord}_r(n)-1} \bmod r
+\]
+are all distinct, and after that they repeat.
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{Conclusion: $|G| > (\log n)^2$}
+Since all powers $n^0, n^1, \ldots, n^{\mathrm{ord}_r(n)-1}$ are distinct
+modulo $r$, and all of them land in $G$:
+\[
+    |G| \;\ge\; \mathrm{ord}_r(n)
+\]
+\vspace{0.5em}
+
+We chose $r$ in Step 2 of AKS precisely so that:
+\[
+    \mathrm{ord}_r(n) \;>\; (\log n)^2
+\]
+\vspace{0.5em}
+
+Chaining the two inequalities:
+\[
+    \boxed{|G| \;\ge\; \mathrm{ord}_r(n) \;>\; (\log n)^2}
+\]
+\end{frame}
+
+\begin{frame}{Working Modulo a Prime: $\mathbb{F}_r$}
+Throughout the proof we work with arithmetic modulo $r$, where $r$ is prime.
+
+This means:
+\[
+    0, 1, 2, \ldots, r-1
+\]
+are the only numbers, and we always reduce modulo $r$.
+
+For example, with $r = 5$: \quad $3 + 4 = 2$, \quad $3 \times 4 = 2$.
+
+We call this number system $\mathbb{F}_r$.
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{Polynomials mod $r$}
+We can also consider polynomials whose coefficients live in $\mathbb{F}_r$:
+\[
+    X^3 + 2X + 4, \qquad X^2 + 1, \qquad \ldots
+\]
+with all coefficients reduced modulo $r$.
+
+For example, with $r = 5$:
+\[
+    (2X + 3) + (X + 4) = 3X + 7 = 3X + 2
+\]
+
+We call this collection $\mathbb{F}_r[X]$.
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{Reducing Polynomials Further: Mod $h(X)$}
+Just as we reduce numbers modulo $r$, we can reduce \emph{polynomials}
+modulo another polynomial $h(X)$.
+
+Every time $h(X)$ appears as a factor, we set it to zero, exactly
+like setting $r = 0$ in modular arithmetic.
+
+\begin{example}
+If $h(X) = X^2 + 1$ and $r = 5$:
+\[
+    X^3 \bmod (X^2+1) = X \cdot X^2 = X \cdot (-1) = -X = 4X
+\]
+since $X^2 \equiv -1 \pmod{h(X)}$.
+\end{example}
+\end{frame}
+
+\begin{frame}{What Is a Multiplicative Inverse?}
+The multiplicative inverse of a number $a$ is the number $b$ such that:
+\[
+    a \times b = 1
+\]
+
+For example, in ordinary arithmetic:
+\[
+    \text{the inverse of } 3 \text{ is } \frac{1}{3}, \quad
+    \text{since } 3 \times \frac{1}{3} = 1.
+\]
+
+In $\mathbb{F}_5$, fractions do not exist, but inverses still do:
+\[
+    \text{the inverse of } 3 \text{ is } 2, \quad
+    \text{since } 3 \times 2 = 6 \equiv 1 \pmod{5}.
+\]
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{Irreducible Polynomials}
+A polynomial $h(X)$ over $\mathbb{F}_r$ is called \emph{irreducible} if it
+cannot be factored into two smaller polynomials, the analogue of a prime number,
+but for polynomials.
+
+\begin{example}
+Over $\mathbb{F}_2$: \quad $X^2 + X + 1$ is irreducible
+(it has no roots: $0^2+0+1=1\ne 0$, $\;1^2+1+1=1\ne 0$).
+\end{example}
+
+When we reduce modulo an irreducible $h(X)$, every nonzero polynomial
+has a multiplicative inverse, we can always divide by any nonzero element.
+We call such a number system a \emph{field}.
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{The Field $\mathbb{F} = \mathbb{F}_r[X]/(h(X))$}
+Putting it all together:
+\[
+    \mathbb{F} = \mathbb{F}_r[X] / (h(X))
+\]
+is the collection of all polynomials with coefficients in $\mathbb{F}_r$,
+reduced modulo $h(X)$.
+
+It behaves like a number system where:
+\begin{itemize}
+    \item coefficients are reduced mod $r$,
+    \item polynomial degree is kept below $\deg h(X)$,
+    \item every nonzero element has an inverse (since $h$ is irreducible).
+\end{itemize}
+
+This is the arena in which we will count elements of $\hat{G}$.
 \end{frame}
 
 %------------------------------------------------
-
-\begin{frame}{Upper Bound}
-
-If $n$ is not a power of $p$:
+\begin{frame}{What Is $\hat{G}$?}
+Fix an irreducible factor $h(X)$ of $X^r - 1$ over $\mathbb{F}_p$.
 
 \[
-|\hat{G}| \le n^{\sqrt{|G|}}
+    P = \left\{ \prod_{a=0}^{\ell} (X+a)^{e_a} \;\middle|\; e_a \ge 0 , \sum_{a=0}^{\ell}{e_a}<t \right\}
+\]
+where $\ell = \lfloor \sqrt{\varphi(r)} \log n \rfloor$.
+
+$\hat{G}$ is the set of \emph{distinct} images of polynomials in $P$,
+inside the field $\mathbb{F} = \mathbb{F}_p[X]/(h(X))$:
+\[
+    \hat{G} = \{ f(X) \bmod h(X) \mid f(X) \in P \}
+\]
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{Why Distinct Polynomials Stay Distinct in $\hat{G}$}
+\begin{block}{Claim}
+If $f(X)$ and $g(X)$ are two distinct polynomials in $P$
+of degree $< t = |G|$, then they map to \emph{different} elements in $\hat{G}$.
+\end{block}
+
+Suppose not: $f(X) = g(X)$ inside $\mathbb{F}$.
+
+Then for any introspective $m \in I$, applying the introspection property to both sides:
+\[
+    f(X^m) = [f(X)]^m = [g(X)]^m = g(X^m) \quad \text{in } \mathbb{F}
 \]
 
+So $f(X^m) - g(X^m) = 0$ in $\mathbb{F}$, meaning $X^m$ is a root of
+the polynomial $Q(Y) = f(Y) - g(Y)$.
+\end{frame}
+
+%------------------------------------------------------------
+\begin{frame}{Reaching a Contradiction}
+As $m$ ranges over all elements of $G$, the values $X^m$ are all
+\emph{distinct} in $\mathbb{F}$, because $X$ is a primitive $r$-th
+root of unity in $\mathbb{F}$.
+\vspace{1em}
+
+So $Q(Y) = f(Y) - g(Y)$ has at least $|G| = t$ distinct roots in $\mathbb{F}$.
+\vspace{1em}
+
+But $f$ and $g$ both have degree $< t$, so:
+\[
+    \deg Q \;<\; t
+\]
+\vspace{0.5em}
+
+A polynomial of degree $< t$ cannot have $t$ distinct roots in a field.
 \vspace{1em}
 
 \begin{block}{Contradiction}
-\[
-|\hat{G}| > n^{\sqrt{|G|}} \quad \text{and} \quad |\hat{G}| \le n^{\sqrt{|G|}}
-\]
+Therefore $f(X) \ne g(X)$ in $\mathbb{F}$. \qed
 \end{block}
-
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
+
+\begin{frame}{How Many Distinct Polynomials of Degree $< t$ Are in $P$?}
+We need to count products $\prod_{a=0}^{\ell}(X+a)^{e_a}$ with $e_a \ge 0$
+and total degree:
+\[
+    \sum_{a=0}^{\ell} e_a \;\le\; t - 1
+\]
+
+This is a standard \emph{stars and bars} count: distributing at most $t-1$
+among $\ell + 1$ values.
+
+The number of ways is:
+\[
+    \binom{t - 1 + \ell + 1}{\ell + 1} = \binom{t + \ell}{\ell + 1}
+\]
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{So $|\hat{G}| \ge \binom{t+\ell}{\ell+1}$}
+Since each such polynomial is distinct in $\hat{G}$:
+\[
+    |\hat{G}| \;\ge\; \binom{t+\ell}{\ell+1}
+\]
+
+Now we use two facts:
+\begin{itemize}
+    \item $t = |G| > \log^2 n$, so $\sqrt{t} > \log n$
+    \item $\varphi(r) \ge t$, so $\ell = \lfloor\sqrt{\varphi(r)}\log n\rfloor \ge \lfloor\sqrt{t}\log n\rfloor$
+\end{itemize}
+
+Write $m = \lfloor \sqrt{t} \log n \rfloor \ge 2$ (since $n \ge 4$). Then $\ell \ge m$, so:
+\[
+    \binom{t+\ell}{\ell+1} \;\ge\; \binom{2m+1}{m+1} \;=\; \binom{2m+1}{m}
+\]
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{A Simple Binomial Inequality}
+\begin{block}{Claim}
+For any integer $m \ge 2$: $\displaystyle\binom{2m+1}{m} > 2^{m+1}$
+\end{block}
+
+\begin{proof}
+The sum of all binomial coefficients gives $2^{2m+1}$. The middle
+term $\binom{2m+1}{m}$ is the largest, and there are $m+1$ terms
+from $\binom{2m+1}{m}$ up to $\binom{2m+1}{2m+1}$, so:
+\[
+    (m+1)\binom{2m+1}{m} \;\ge\; 2^{2m} \implies \binom{2m+1}{m} \;\ge\; \frac{2^{2m}}{m+1} > 2^{m+1}
+\]
+for $m \ge 2$.
+\end{proof}
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{Completing the Lower Bound}
+Applying the inequality with $m = \lfloor\sqrt{t}\log n\rfloor$:
+\[
+    |\hat{G}| \;\ge\; \binom{2m+1}{m} \;>\; 2^{m+1} \;>\; 2^{\sqrt{t}\log n} \;=\; n^{\sqrt{t}}
+\]
+
+Since $t = |G|$:
+
+\begin{block}{Lower Bound}
+\[
+    |\hat{G}| \;>\; n^{\sqrt{|G|}}
+\]
+\end{block}
+\end{frame}
+%------------------------------------------------------------
+
+\begin{frame}{Finding a Polynomial That $\hat{G}$ Satisfies}
+Consider the subset of $I$:
+\[
+    J = \left\{ \left(\frac{n}{p}\right)^i \cdot p^j \;\middle|\; 0 \le i, j \le \lfloor\sqrt{t}\rfloor \right\}
+\]
+where $t = |G|$.
+
+$J$ has $(\lfloor\sqrt{t}\rfloor + 1)^2 > t$ elements.
+
+But $G$ has only $t$ distinct residues mod $r$.
+
+By pigeonhole, two distinct elements of $J$ must give the
+same residue mod $r$:
+\[
+    m_1 \equiv m_2 \pmod{r}, \qquad m_1 \ne m_2, \quad m_1, m_2 \in J.
+\]
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{What Happens When $n$ Is Not a Power of $p$}
+The elements of $J$ have the form $\left(\frac{n}{p}\right)^i p^j$.
+
+If two such elements are equal (not just mod $r$, but as integers):
+\[
+    \left(\frac{n}{p}\right)^{i_1} p^{j_1} = \left(\frac{n}{p}\right)^{i_2} p^{j_2}
+\]
+then rearranging gives $n^{i_1 - i_2} = p^{j_2 - j_1 - i_2 + i_1}$,
+meaning $n$ is a power of $p$.
+
+So if $n$ is \emph{not} a power of $p$, all elements of $J$ are
+\emph{distinct as integers}, giving us genuinely distinct $m_1 \ne m_2$
+with $m_1 \equiv m_2 \pmod{r}$.
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{A Polynomial Satisfied by All of $\hat{G}$}
+Since $m_1 \equiv m_2 \pmod{r}$, we have $X^{m_1} = X^{m_2}$ in $\mathbb{F}$
+(because $X^r = 1$ in $\mathbb{F}$).
+
+So for any $f(X) \in P$, the introspection property gives:
+\[
+    [f(X)]^{m_1} = f(X^{m_1}) = f(X^{m_2}) = [f(X)]^{m_2} \quad \text{in } \mathbb{F}
+\]
+
+Every element $f(X) \in \hat{G}$ is therefore a root of:
+\[
+    Q(Y) = Y^{m_1} - Y^{m_2}
+\]
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{Bounding the Degree of $Q(Y)$}
+The degree of $Q(Y) = Y^{m_1} - Y^{m_2}$ is $\max(m_1, m_2)$.
+
+Both $m_1$ and $m_2$ lie in $J$, so:
+\[
+    m_1, m_2 \;\le\; \left(\frac{n}{p}\right)^{\lfloor\sqrt{t}\rfloor} \cdot p^{\lfloor\sqrt{t}\rfloor}
+    \;=\; n^{\lfloor\sqrt{t}\rfloor} \;\le\; n^{\sqrt{t}}
+\]
+
+Therefore:
+\[
+    \deg Q \;\le\; n^{\sqrt{t}}
+\]
+
+Since a polynomial of degree $d$ has at most $d$ roots in a field,
+and all $|\hat{G}|$ elements are roots of $Q$:
+\[
+    \boxed{|\hat{G}| \;\le\; n^{\sqrt{|G|}}}
+\]
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{The Contradiction}
+We now have two bounds on $|\hat{G}|$ simultaneously:
+
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{block}{Lower Bound}
+\[
+|\hat{G}| > n^{\sqrt{|G|}}
+\]
+(always true)
+\end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{block}{Upper Bound}
+\[
+|\hat{G}| \le n^{\sqrt{|G|}}
+\]
+(if $n$ not a power of $p$)
+\end{block}
+\end{column}
+\end{columns}
+\vspace{1.5em}
+
+These cannot both hold. So our assumption was wrong:
+\[
+    n \text{ must be a power of } p.
+\]
+\end{frame}
+
+%------------------------------------------------------------
 
 \begin{frame}{Conclusion}
+We have shown $n = p^k$ for some $k \ge 1$.
 
-Thus:
-\[
-n = p^k
-\]
+But AKS checks at the very first step whether $n$ is a perfect power,
+and outputs \textsc{Composite} if so.
 
-\vspace{1em}
-
-From Step 1:
-\[
-k = 1
-\]
-
-\vspace{1em}
+Since $n$ passed that check, we must have $k = 1$.
 
 \begin{block}{Final Result}
 \[
-n = p \Rightarrow n \text{ is prime}
+    n = p \implies n \text{ is prime.} \qquad \blacksquare
 \]
 \end{block}
-
 \end{frame}
 %------------------------------------------------
-%------------------------------------------------
+\begin{frame}{Time Complexity: Overview}
+Let $k = \log n$ be the input size (number of bits in $n$).
 
-\begin{frame}{Complexity Overview}
-
-Let input size be:
-\[
-k = \log n
-\]
-
-\vspace{1em}
+The AKS algorithm has five steps. We analyze each one and
+show every step runs in time polynomial in $k$.
 
 \begin{block}{Goal}
-Show AKS runs in polynomial time in $k$
+Total time $= \mathcal{O}((\log n)^c)$ for some fixed constant $c$.
 \end{block}
-
-\vspace{1em}
-
-We analyze each step of the algorithm.
-
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
 
 \begin{frame}{Step 1: Perfect Power Check}
+Check whether $n = a^b$ for some $a \in \mathbb{N}$, $b > 1$.
 
-\begin{itemize}
-    \item Try all exponents $b \le \log n$
-    \item Compute integer $b$-th roots
-\end{itemize}
+We try all exponents $b \le \log n$, and for each $b$, compute
+the integer $b$-th root of $n$ using binary search.
 
-\vspace{1em}
-
+Each root computation on a $\log n$-bit number costs $\mathcal{O}((\log n)^2)$,
+and we do $\mathcal{O}(\log n)$ of them:
 \[
-\text{Time} = \bigO((\log n)^3)
+    \text{Step 1 time} = \mathcal{O}((\log n)^3)
 \]
-
-\vspace{1em}
-
-\begin{block}{Reason}
-Polynomial-time arithmetic on $\log n$-bit numbers
-\end{block}
-
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
 
 \begin{frame}{Step 2: Finding $r$}
+Find the smallest $r$ such that $\mathrm{ord}_r(n) > (\log n)^2$.
 
-We search for smallest $r$ such that:
+By Lemma 4, such an $r$ exists with $r \le \log^5 n$.
+We try each candidate $r$ and check whether $n^i \equiv 1 \pmod{r}$
+for all $i \le (\log n)^2$, stopping as soon as one fails.
+
+There are $\mathcal{O}(\log^5 n)$ candidates, each requiring
+$\mathcal{O}((\log n)^2)$ modular exponentiations costing $\mathcal{O}(\log n)$ each:
 \[
-\mathrm{ord}_r(n) > (\log n)^2
+    \text{Step 2 time} = \mathcal{O}((\log n)^5 \cdot (\log n)^2) = \mathcal{O}((\log n)^7)
 \]
-
-\vspace{1em}
-
-\begin{itemize}
-    \item Try $r \le (\log n)^5$
-    \item For each $r$, test powers up to $(\log n)^2$
-\end{itemize}
-
-\vspace{1em}
-
-\[
-\text{Time} = \bigO((\log n)^7)
-\]
-
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
 
 \begin{frame}{Step 3: GCD Checks}
+For each $a$ with $1 \le a \le r$, compute $\gcd(a, n)$.
 
-\begin{itemize}
-    \item Compute $\gcd(a,n)$ for $a \le r$
-\end{itemize}
+If any $\gcd$ lies strictly between $1$ and $n$, output \textsc{Composite}.
 
-\vspace{1em}
-
+Each GCD via the Euclidean algorithm costs $\mathcal{O}(\log n)$,
+and we do at most $r = \mathcal{O}(\log^5 n)$ of them:
 \[
-r = \bigO((\log n)^5)
+    \text{Step 3 time} = \mathcal{O}((\log n)^5 \cdot \log n) = \mathcal{O}((\log n)^6)
 \]
-
-\[
-\text{Time per gcd} = \bigO(\log n)
-\]
-
-\vspace{1em}
-
-\[
-\Rightarrow \text{Total} = \bigO((\log n)^6)
-\]
-
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
 
-\begin{frame}{Step 5: Main Bottleneck}
+\begin{frame}{Step 4: Small $n$ Check}
+If $n \le r$, output \textsc{Prime} directly.
 
-We check:
-\[
-(X+a)^n \equiv X^n + a \pmod{X^r-1,\, n}
-\]
+This is a single comparison and costs $\mathcal{O}(1)$, negligible.
 
-\vspace{1em}
-
-\begin{itemize}
-    \item Number of $a$ values:
-\[
-\ell = \bigO(\sqrt{r}\log n)
-\]
-\end{itemize}
-
-\vspace{1em}
-
-\[
-r = \bigO((\log n)^5) \Rightarrow \ell = \bigO((\log n)^{7/2})
-\]
-
+If we reach Step 5, we know $n > r$, so $n$ is large enough
+that the polynomial checks are meaningful.
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
 
-\begin{frame}{Cost Per Iteration}
-
-Compute $(X+a)^n \bmod (X^r-1, n)$:
-
-\begin{itemize}
-    \item Use repeated squaring: $\bigO(\log n)$ steps
-    \item Each multiplication:
-    \begin{itemize}
-        \item Degree $\le r$
-        \item Coefficients size $\log n$
-    \end{itemize}
-\end{itemize}
-
-\vspace{1em}
-
+\begin{frame}{Step 5: The Main Loop}
+For each $a$ from $1$ to $\ell = \lfloor\sqrt{\varphi(r)}\log n\rfloor$, verify:
 \[
-\text{Cost per multiplication} = \bigO(r \log n)
+    (X + a)^n \equiv X^n + a \pmod{X^r - 1,\; n}
 \]
 
-\vspace{1em}
-
+Since $\varphi(r) \le r = \mathcal{O}(\log^5 n)$:
 \[
-\Rightarrow \text{Per iteration} = \bigO(r (\log n)^2)
+    \ell = \mathcal{O}\!\left(\sqrt{\log^5 n} \cdot \log n\right) = \mathcal{O}((\log n)^{7/2})
 \]
 
+This is the most expensive step, we analyze its cost next.
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
 
-\begin{frame}{Total Complexity}
+\begin{frame}{Cost of Each Polynomial Exponentiation}
+Each check requires computing $(X+a)^n \bmod (X^r - 1, n)$.
 
+We use repeated squaring, which takes $\mathcal{O}(\log n)$ multiplications.
+
+Each multiplication involves polynomials of degree $< r$ with
+coefficients of size $\log n$, costing $\mathcal{O}(r \log n)$.
+
+So the cost per value of $a$ is:
 \[
-\text{Total} = \ell \cdot \bigO(r (\log n)^2)
+    \mathcal{O}(\log n) \times \mathcal{O}(r \log n) = \mathcal{O}(r (\log n)^2)
 \]
-
-\vspace{1em}
-
-Substitute:
-\[
-\ell = (\log n)^{7/2}, \quad r = (\log n)^5
-\]
-
-\vspace{1em}
-
-\[
-\Rightarrow \bigO((\log n)^{7/2} \cdot (\log n)^5 \cdot (\log n)^2)
-\]
-
-\[
-= \bigO((\log n)^{21/2})
-\]
-
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
 
-\begin{frame}{Improvements}
-
-\begin{itemize}
-    \item Better bounds on $r$ reduce complexity
-    \item Improved algorithms achieve:
+\begin{frame}{Total Time Complexity}
+Putting all steps together, Step 5 dominates:
 \[
-\bigO((\log n)^6)
+    \text{Step 5 time} = \ell \cdot \mathcal{O}(r(\log n)^2)
 \]
-\end{itemize}
+\vspace{0.5em}
+Substituting $\ell = \mathcal{O}((\log n)^{7/2})$ and $r = \mathcal{O}((\log n)^5)$:
+\[
+    = \mathcal{O}\!\left((\log n)^{7/2} \cdot (\log n)^5 \cdot (\log n)^2\right)
+    = \mathcal{O}\!\left((\log n)^{21/2}\right)
+\]
+\vspace{0.5em}
 
-\vspace{1em}
-
-\begin{block}{Key Insight}
-All steps are polynomial in $\log n$
+\begin{block}{Conclusion}
+AKS runs in time $\mathcal{O}((\log n)^{21/2})$, which is polynomial in
+the input size $k = \log n$. Hence \textsc{Primes} $\in$ \textbf{P}.
 \end{block}
-
 \end{frame}
-\begin{frame}{Comparison}
+%------------------------------------------------
+\begin{frame}{Can We Do Better?}
+The complexity $\mathcal{O}((\log n)^{21/2})$ is polynomial, but can it be improved?
 
+The bottleneck is Step 2: finding $r$ such that $\mathrm{ord}_r(n) > (\log n)^2$.
+A tighter bound on $r$ directly reduces the overall complexity.
+
+Lenstra and Pomerance (2011) showed that a better choice of $r$
+and a more careful analysis brings the complexity down to:
+\[
+    \mathcal{O}((\log n)^6)
+\]
+
+Further improvements are possible assuming standard conjectures
+in number theory, such as the Artin conjecture on primitive roots.
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{How Does AKS Compare in Practice?}
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{lccc}
+\hline
+\textbf{Algorithm} & \textbf{Deterministic?} & \textbf{Always correct?} & \textbf{Complexity} \\
+\hline
+Trial division     & Yes & Yes & $\mathcal{O}(\sqrt{n})$ \\
+Fermat test        & Yes & No  & $\mathcal{O}((\log n)^2)$ \\
+Miller-Rabin      & No  & Yes (w.h.p.) & $\mathcal{O}((\log n)^3)$ \\
+AKS                & Yes & Yes & $\mathcal{O}((\log n)^6)$ \\
+\hline
+\end{tabular}
+\end{center}
+
+AKS is the only algorithm that is both deterministic and
+provably correct for all inputs, with polynomial runtime.
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{The Practical Catch}
+Despite its theoretical importance, AKS is rarely used in practice.
+
+Miller-Rabin runs much faster and the probability of error can be
+made astronomically small by repeating the test a few times.
+
+For a 2048-bit number, Miller-Rabin with 40 rounds has an error
+probability of at most $4^{-40} \approx 10^{-24}$, smaller than
+the probability of a hardware failure mid-computation.
+
+\begin{block}{The honest summary}
+AKS matters not because it is the fastest, but because it
+\emph{settles a question}: can primality be decided without randomness?
+\end{block}
+\end{frame}
+
+%------------------------------------------------------------
+
+\begin{frame}{What AKS Actually Proved}
+Before 2002, the best deterministic primality tests either:
 \begin{itemize}
-    \item Fermat: fast, unreliable
-    \item Miller--Rabin: fast, probabilistic
-    \item AKS: deterministic, polynomial
+    \item ran in superpolynomial time, or
+    \item required unproven number-theoretic assumptions.
 \end{itemize}
 
-\vspace{1em}
+AKS gave the first unconditional, deterministic, polynomial-time
+algorithm, settling a question that had been open for decades.
 
-\begin{block}{Trade-off}
-AKS is theoretically important, but slower in practice
-\end{block}
-
+It also demonstrated something deeper: the polynomial identities
+that characterize primes (Lemma 1) contain enough information
+to \emph{decide} primality efficiently, without any randomness.
 \end{frame}
 
-%------------------------------------------------
+%------------------------------------------------------------
+
+\begin{frame}{Where Does AKS Sit in Complexity Theory?}
+Recall the major complexity classes:
+\[
+    \textbf{P} \subseteq \textbf{BPP} \subseteq \cdots
+\]
+\vspace{0.5em}
+
+\textbf{BPP} is the class of problems solvable in polynomial time
+with a randomized algorithm (bounded error probability).
+
+Miller-Rabin places \textsc{Primes} in \textbf{BPP}.
+
+AKS places \textsc{Primes} unconditionally in \textbf{P}:
+\[
+    \textsc{Primes} \in \mathbf{P}
+\]
+\vspace{0.5em}
+
+This is one of the few natural problems known to lie in \textbf{P}
+after a long period of sitting only in \textbf{BPP}.
+\end{frame}
+
+%------------------------------------------------------------
 
 \begin{frame}{Takeaway}
-
 \begin{center}
 \Large
 Randomness is not necessary.
 \end{center}
+\vspace{1.5em}
 
-\vspace{1em}
+The AKS algorithm shows that one of the most fundamental questions
+in mathematics, \emph{is this number prime?}, can be answered
+efficiently, deterministically, and unconditionally.
 
-\begin{block}{Conclusion}
-Primality testing is fundamentally efficient
+\begin{block}{Final Conclusion}
+\[
+    \textsc{Primes} \in \mathbf{P}
+\]
+Primality testing is not just tractable, it is \emph{provably} tractable,
+with no randomness, no unproven assumptions, and no exceptions.
 \end{block}
-
 \end{frame}
 
 \end{document}
